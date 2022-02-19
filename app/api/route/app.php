@@ -20,10 +20,10 @@ Route::miss(function() {
 //测试
 Route::group('test', function () {
     Route::any('test', 'test');
-    Route::any('translate', 'translate');
+    Route::any('test1', 'test1');
 })->prefix('TestController/');
 
 
-Route::group('translate', function () {
+Route::group('codename', function () {
     Route::any('translate', 'translate');
-})->prefix('TranslateController/');
+})->prefix('CodeNameController/');

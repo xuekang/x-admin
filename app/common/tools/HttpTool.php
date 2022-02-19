@@ -13,12 +13,12 @@ class HttpTool
      /**
      * curl发送http请求
      * @param string $url 请求的url
-     * @param array $data 请求参数
+     * @param  array|string $data 请求参数
      * @param bool $isPost 是否为post请求
      * @param array $opts curl配置参数
      * @return mixed
      */
-    public static function curlRequest(string $url, array $data = [], bool $isPost = true, array $opts = []): array
+    public static function curlRequest(string $url, $data = [], bool $isPost = true, array $opts = []): array
     {
         //初始化curl
         $curl = curl_init();
@@ -68,7 +68,7 @@ class HttpTool
 
             if ($isJson && $data) {
                 //json处理
-                $data   = json_encode($data);
+                $data   = is_array($data) ? json_encode($data) : $data;
                 $header = array_merge($header, ['Content-Type: application/json']);
                 //设置头信息
                 $options[CURLOPT_HTTPHEADER] = $header;
@@ -78,29 +78,34 @@ class HttpTool
             } else {
                 //x-www-form-urlencoded处理
                 //如果是数组的方式,要加http_build_query，不加的话，遇到二维数组会报错。
-                $options[CURLOPT_POSTFIELDS] = http_build_query($data);
+                $options[CURLOPT_POSTFIELDS] = is_array($data) ? http_build_query($data) : $data;
             }
         } else {
             // GET
             $options[CURLOPT_CUSTOMREQUEST] = 'GET';
 
             //没有？且data不为空,将参数拼接到url中
-            if (strpos($url, '?') === false && !empty($data) && is_array($data)) {
-                $params_arr = [];
-                foreach ($data as $k => $v) {
-                    array_push($params_arr, $k . '=' . $v);
+            if (strpos($url, '?') === false && !empty($data)) {
+                if(is_array($data)){
+                    $params_arr = [];
+                    foreach ($data as $k => $v) {
+                        array_push($params_arr, $k . '=' . $v);
+                    }
+                    $params_string = implode('&', $params_arr);
+                }else{
+                    $params_string = $data;
                 }
-                $params_string        = implode('&', $params_arr);
+                
                 $options[CURLOPT_URL] = $url . '?' . $params_string;
             }
         }
         
         //数组方式设置curl，比多次使用curl_setopt函数设置在速度上要快
         curl_setopt_array($curl, $options);
-
+        // dump($curl, $options);
         // 执行请求
         $response = curl_exec($curl);
-
+        // halt($response);
         //返回的CONTENT_TYPE类型
         $contentType = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
 
@@ -111,8 +116,13 @@ class HttpTool
         $code = curl_errno($curl);//没有错误时curl_errno返回0
         $msg = $code ? curl_error($curl) : '成功';;
         $data = [];
-        if ($response && !is_null(json_decode($response, true))) {
-            $data = json_decode($response, true);
+        if ($response) {
+            if(!is_null(json_decode($response, true))){
+                $data = json_decode($response, true);
+            }else{
+                $data = $response;
+            }
+            
             // if (!$data) {
             //     //不是json,则认为是xml数据
             //     // libxml_disable_entity_loader(true);//验证xml

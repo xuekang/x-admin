@@ -14,12 +14,12 @@ class TestController extends Base
 	public function test()
 	{
 		$data = input();
-		$L = new BaiduTranslate($data);
-		// $data = $L->translateV1($data);
+		$L = new Test($data);
+		$data = $L->test($data);
 		return $this->success($data);
 	}
 
-	public function translate()
+	public function test1()
 	{
 		$data = input();
 		$L = new BaiduTranslate($data);

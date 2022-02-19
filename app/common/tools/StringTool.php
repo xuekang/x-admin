@@ -1,6 +1,6 @@
 <?php
 
-namespace app\common\lib;
+namespace app\common\tools;
 
 use think\helper\Str;
 
