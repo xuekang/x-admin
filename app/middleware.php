@@ -7,4 +7,9 @@ return [
     // \think\middleware\LoadLangPack::class,
     // Session初始化
     // \think\middleware\SessionInit::class
+
+    // 跨域
+    \app\common\middleware\Cors::class,
+    // 权限验证
+    \app\common\middleware\Auth::class,
 ];

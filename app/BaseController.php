@@ -6,6 +6,7 @@ namespace app;
 use think\App;
 use think\exception\ValidateException;
 use think\Validate;
+use app\common\tools\JsonService;
 
 /**
  * 控制器基础类
@@ -91,4 +92,27 @@ abstract class BaseController
         return $v->failException(true)->check($data);
     }
 
+    /**
+     * 通用成功返回(如果返回数据类型为数组可将其直接放入message中)
+     * @param string|array $message 提示信息
+     * @param array $data 数据
+     * @param int $code 错误码
+     * @return \think\response\Json
+     */
+    public function success($message, $data = [], $code=null)
+    {
+        return json(JsonService::success($message, $data, $code));
+    }
+
+    /**
+     * 通用失败返回
+     * @param string $message 提示信息
+     * @param array $data 数据
+     * @param int $code 错误码
+     * @return \think\response\Json
+     */
+    public function fail($message, $data = [], $code = null)
+    {
+        return json(JsonService::fail($message, $data, $code));
+    }
 }

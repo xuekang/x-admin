@@ -10,27 +10,20 @@
 // +----------------------------------------------------------------------
 use think\facade\Route;
 
+
+// Route::miss('indexController/error'); //强制路由
+
 Route::miss(function() {
     return '404 Not Found!';
-});
+}); //强制路由
 
-Route::get('think', function () {
-    return 'hello,ThinkPHP6!';
-});
-
-Route::get('hello/:name', 'index/hello');
-
-// Route::group('code_name', function () {
-//     Route::group('test', function () {
-//         Route::any('test', '@test');
-//     })->prefix('\app\code_name\controller\TestController::class');
-// });
-
-// Route::group('code_name', function () {
-//     Route::group('test', function () {
-//         Route::any('test', 'code_name.Test/test');
-//     });
-// });
+//测试
+Route::group('test', function () {
+    Route::any('test', 'test');
+    Route::any('translate', 'translate');
+})->prefix('TestController/');
 
 
-// Route::any('code_name/test/test1', '\app\code_name\controller\TestController@test1');
+Route::group('translate', function () {
+    Route::any('translate', 'translate');
+})->prefix('TranslateController/');

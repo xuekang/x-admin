@@ -23,7 +23,19 @@ return [
             'tag_prefix' => 'tag:',
             // 序列化机制 例如 ['serialize', 'unserialize']
             'serialize'  => [],
+
         ],
         // 更多的缓存连接
+        'redis'   =>  [
+            'type'     => env('redis.type', 'redis'),
+            'host'     => env('redis.host', ''),
+            'port'     => env('redis.port', '6999'),
+            'password' => env('redis.password', ''),
+            'select'   => env('redis.select', '0'),
+            'expire'   => env('redis.expire', '0'),
+            'prefix'   => env('redis.prefix', ''),
+            'timeout'  => env('redis.timeout', '0'),
+        ],
+
     ],
 ];
