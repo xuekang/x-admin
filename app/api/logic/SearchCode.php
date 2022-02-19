@@ -65,12 +65,11 @@ class SearchCode extends Base
 			$args .= "&{$lan}";
 		}
 		
-
 		$ret = HttpTool::curlRequest(self::URL, $args,false);
 		$data = $ret[2];
 
 		// halt($data);
-		
+
 		return $data; 
 	}
 }
