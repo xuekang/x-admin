@@ -21,8 +21,7 @@ class Cors extends AllowCrossDomain
             'Access-Control-Allow-Credentials' => $config->get('cors.supportsCredentials'),
             'Access-Control-Max-Age' => $config->get('cors.maxAge'),
             'Access-Control-Allow-Methods' => is_array($methods) ? join(',',$methods) : $methods,
-            'Access-Control-Allow-Headers' => is_array($headers) ? join(',',$headers) : $headers,
-            'Access-Control-Allow-Origin' => $config->get('cors.allowedOrigins')
+            'Access-Control-Allow-Headers' => is_array($headers) ? join(',',$headers) : $headers
         ];
         parent::__construct($config);
     }
