@@ -9,13 +9,23 @@ use app\common\tools\HttpTool;
 use think\facade\Cache;
 use think\facade\Db;
 use app\api\logic\SearchCode;
+use app\code_name\logic\parseCode;
 
 class Test extends Base
 {
 	public function test()
 	{
-		$L = new SearchCode();
-		$data = $L->search('cust_info');
+		// $L = new SearchCode();
+		// $data = $L->search('cust_info');
+		// halt($data);
+
+		$str = 'Customer information';
+
+		// preg_match_all('/o/',$str,$data);
+		// halt($data);
+
+		$parseCode = new parseCode();
+		$data = $parseCode->parse($str);
 		halt($data);
 		return true;
 	}

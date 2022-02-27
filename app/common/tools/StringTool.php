@@ -220,7 +220,7 @@ class StringTool
 	 * 获取指定字符后(前)的内容
 	 * @param string $str 
 	 * @param string $special_str 指定字符
-	 * @param string $type 类型，front-前，behind-后 
+	 * @param string $type 类型，before-前，behind-后 
 	 * @param int $mode 模式
 	 * 	1-查找字符串在另一字符串中第一次出现的位置（不区分大小写）
 	 * 	2-查找字符串在另一字符串中第一次出现的位置（区分大小写）
@@ -229,7 +229,7 @@ class StringTool
 	 * @return string  
 	 * @author xk
 	 */
-	public static function getContentBySpecialStr($str,$special_str,$type='front',$mode=1,$contain_special_str=true)
+	public static function getContentBySpecialStr($str,$special_str,$type='before',$mode=1,$contain_special_str=true)
 	{
 		$location = 0;
 		if($mode == 2){
@@ -242,7 +242,7 @@ class StringTool
 
 
 		if($contain_special_str){
-			if($type == 'front'){
+			if($type == 'before'){
 				$location += 1;
 			}
 		}else{

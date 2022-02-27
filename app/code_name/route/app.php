@@ -18,14 +18,8 @@ Route::miss(function() {
 }); //强制路由
 
 //测试
-Route::group('test', function () {
-    Route::any('test', 'test');
-    Route::any('test1', 'test1');
-})->prefix('TestController/');
+// Route::group('test', function () {
+//     Route::any('test', 'test');
+//     Route::any('test1', 'test1');
+// })->prefix('TestController/');
 
-
-Route::group('codename', function () {
-    Route::any('translate', 'translate');
-    Route::any('searchCode', 'searchCode');
-    Route::any('search', 'search');
-})->prefix('CodeNameController/');

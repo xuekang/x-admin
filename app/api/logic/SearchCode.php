@@ -43,10 +43,10 @@ class SearchCode extends Base
      * @param string $query 请求翻译query
      * @param array $from 翻译源语言
 	 * @param string $to 翻译目标语言
-     * @return string 译文
+     * @return array
      * @author xk
      */
-	public function search($query,$page=0,$per_page=100,$lan=[22,106,24])
+	public function search($query,$page=0,$per_page=100,$lan=[])
 	{
 		$args = array(
 			'q' => $query,
@@ -69,7 +69,7 @@ class SearchCode extends Base
 		$data = $ret[2];
 
 		// halt($data);
-
+		$data = $data['results'] ?? [];
 		return $data; 
 	}
 }
