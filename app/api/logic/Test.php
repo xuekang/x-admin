@@ -10,6 +10,7 @@ use think\facade\Cache;
 use think\facade\Db;
 use app\api\logic\SearchCode;
 use app\code_name\logic\parseCode;
+use app\sql_tool\logic\sqlParser;
 
 class Test extends Base
 {
@@ -19,14 +20,19 @@ class Test extends Base
 		// $data = $L->search('cust_info');
 		// halt($data);
 
-		$str = 'Customer information';
+		// $str = 'Customer information';
 
-		// preg_match_all('/o/',$str,$data);
+		// // preg_match_all('/o/',$str,$data);
+		// // halt($data);
+
+		// $parseCode = new parseCode();
+		// $data = $parseCode->parse($str);
 		// halt($data);
+		// phpinfo();
 
-		$parseCode = new parseCode();
-		$data = $parseCode->parse($str);
-		halt($data);
+
+		$L = new sqlParser();
+		halt($L->parse());
 		return true;
 	}
 
@@ -34,13 +40,15 @@ class Test extends Base
 	public function test1()
 	{
 		//Db
-		$data = Db::table('test')->select()->toArray();
-
+		// 	$data = Db::table('test')->where([['id','>',0],['name','>',0]])->field('id,name')->buildSql();
+		$data = Db::table('test')->fetchSql()->insert([
+			'name'=>'c'
+		]);
 		//redis
-		Cache::store('redis')->set('name','value',3600);
-		$data = Cache::store('redis')->get('name');
+		// Cache::store('redis')->set('name','value',3600);
+		// $data = Cache::store('redis')->get('name');
 		
-		halt($data);
+		halt(22,$data);
 		return true;
 	}
 }

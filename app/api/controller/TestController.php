@@ -22,8 +22,8 @@ class TestController extends Base
 	public function test1()
 	{
 		$data = input();
-		$L = new BaiduTranslate($data);
-		$data = $L->translate($data);
+		$L = new Test($data);
+		$data = $L->test1($data);
 		return $this->success($data);
 	}
 }
