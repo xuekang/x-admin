@@ -11,7 +11,8 @@ use think\helper\Str;
 
 class parseCode extends Base
 {
-	
+	private $value = [];
+
 	public function parse($query,$lan=[])
 	{
 		$vals = [];
@@ -70,6 +71,97 @@ class parseCode extends Base
 
 		return $variables;
 	}
+
+	public function parseV2($query,$lan=[])
+	{
+		$vals = [];
+
+		if($this->_isZH($query)){
+			$BaiduTranslate = new BaiduTranslate();
+			$keyword = $BaiduTranslate->translate($query);
+		}else{
+			$keyword = $query;
+		}
+		
+		//转小写
+		$keyword = strtolower($keyword);
+
+		// 过滤英文翻译中的名称修饰词
+		preg_replace('/(a|an|the)\s{1,}/i',' ',$keyword);
+
+		$keywords = explode(' ',$keyword);
+		
+
+		$SearchCode = new SearchCode();
+		$search_res = $SearchCode->search($keyword,0,50,$lan);
+		foreach($search_res as $item){
+			$search_code_str = $this->getSearchCodeStr($item['lines']);
+
+			$vals = array_merge($vals,$this->getValue($keywords,$search_code_str));
+		}
+
+		$vals[] = implode('_',$keywords);
+
+		return $this->formatValue($vals);
+	}
+
+	public function getValue($keywords,$code_str)
+	{
+		$data = [];
+		$keyword_patterns = [];
+		$new_keywords = [];
+		foreach($keywords as $v){
+			$keyword = substr($v,0,4);
+			$new_keywords[] = $keyword;
+			$keyword_patterns[] = $this->getKeyWordPattern($keyword);
+		}
+
+
+		foreach($keyword_patterns as $keyword_pattern){
+			preg_match_all($keyword_pattern,$code_str,$match_res);
+			foreach($match_res[0] as $match_item){
+				//remove "-" and "/" from the start and the end
+				preg_replace('/^(\-|_|\\|\/)*/','',$match_item);
+				preg_replace('/(\-|_|\\|\/)*$/','',$match_item);
+				if(
+					!$this->_isLink($match_item)
+					&& strlen($match_item) < 64
+					&& $this->isValidvalue($new_keywords,$match_item)
+				){
+					// dump($new_keywords,$match_item);
+					$data[] = $match_item;
+				}
+			}
+		}
+		return $data;
+	}
+
+	private  function isValidvalue($keywords,$val)
+	{
+		foreach($keywords as $kw){
+			if(stripos($val,$kw) === false){
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private  function formatValue($vals)
+	{
+		$data = [];
+		$vals = array_count_values($vals);
+		arsort($vals);
+		foreach($vals as $k=>$v){
+			$data[] = [
+				'keyword'=> $k,
+				'count'=>$v,
+				'color'=>$this->randomLabelColor()
+			];
+		}
+		return $data;
+	}
+
+
 
 	private function _isZH($str)
 	{

@@ -16,9 +16,9 @@ class Test extends Base
 {
 	public function test()
 	{
-		// $L = new SearchCode();
-		// $data = $L->search('cust_info');
-		// halt($data);
+		$L = new parseCode();
+		$data = $L->parseV2('员工入职');
+		halt($data);
 
 		// $str = 'Customer information';
 
@@ -31,8 +31,8 @@ class Test extends Base
 		// phpinfo();
 
 
-		$L = new sqlParser();
-		halt($L->parse());
+		// $L = new sqlParser();
+		// halt($L->parseV2());
 		return true;
 	}
 

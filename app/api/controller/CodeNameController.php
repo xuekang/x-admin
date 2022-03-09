@@ -34,9 +34,10 @@ class CodeNameController extends Base
 	{
 		$query = input('query');
 		$lan = input('lan');
+		$search_model = input('search_model');
 		my_throw_if(!$query,'查询关键词(query)为空');
 		$L = new parseCode();
-		$data = $L->parse($query,$lan);
+		$data = $search_model == 2 ? $L->parseV2($query,$lan) : $L->parse($query,$lan);
 		return $this->success('成功',$data);
 	}
 }
