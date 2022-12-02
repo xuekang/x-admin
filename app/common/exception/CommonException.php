@@ -36,10 +36,12 @@ class CommonException extends Handle
     public function render($request, Throwable $e): Response
     {
         // 如果处于调试模式
-        if (env('app_debug')) {
+        $app_debug = input('app_debug',env('app_debug'));
+        if ($app_debug) {
+            app()->debug(true);
             return parent::render($request, $e);
             //return JsonService::fail($e->getMessage());
-        } 
+        }
 
         if ($e instanceof HttpException) {
             $this->httpStatus = $e->getStatusCode();
