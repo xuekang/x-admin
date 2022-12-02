@@ -22,16 +22,10 @@ if (!function_exists('my_throw_if')) {
 	}
 }
 
-/** 获取请求参数
+/** 生成系统主键编码
  */
-if (!function_exists('getallheaders')) {
-	function getallheaders() {
-		$headers = array();
-		foreach ($_SERVER as $name => $value) {
-			if (substr($name, 0, 5) == 'HTTP_') {
-				$headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ',substr($name, 5)))))] = $value;
-			}
-		}
-		return $headers;
+if (!function_exists('make_id_code')) {
+	function make_id_code() {
+		return (new \app\common\tools\SnowFlake(SNOW_FLAKE_WORKER_ID))->nextId();
 	}
 }

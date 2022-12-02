@@ -24,7 +24,6 @@ class StringTool
             $uuid = substr($uuid,0,$length);
         }
         return $prefix . $uuid;
-        // return uniqid();
     }
 	
 	/**

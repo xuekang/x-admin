@@ -47,23 +47,6 @@ class ArrayTool
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     /**
      *  二维数组去重
      * @param array $_2d_array [待去重二维数组]

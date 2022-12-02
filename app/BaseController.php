@@ -99,7 +99,7 @@ abstract class BaseController
      * @param int $code 错误码
      * @return \think\response\Json
      */
-    public function success($message, $data = [], $code=null)
+    public function success($message=JsonService::SUCCESSFUL_DEFAULT_MESSAGE, $data = [], $code=null)
     {
         return json(JsonService::success($message, $data, $code));
     }
@@ -111,7 +111,7 @@ abstract class BaseController
      * @param int $code 错误码
      * @return \think\response\Json
      */
-    public function fail($message, $data = [], $code = null)
+    public function fail($message=JsonService::FAIL_DEFAULT_MESSAGE, $data = [], $code = null)
     {
         return json(JsonService::fail($message, $data, $code));
     }

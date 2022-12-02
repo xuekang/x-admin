@@ -22,7 +22,7 @@ class JsonService
      * @param int $code 错误码
      * @param int $time 时间戳
      */
-    public static function success($message, $data = [], $code=null, $time = 0)
+    public static function success($message = self::SUCCESSFUL_DEFAULT_MESSAGE, $data = [], $code=null, $time = 0)
     {
         if (true == is_array($message) && empty($data)) {
             $data = $message;
@@ -39,7 +39,7 @@ class JsonService
      * @param int $code 错误码
      * @param int $time 时间戳
      */
-    public static function fail($message, $data = [], $code = null, $time = 0)
+    public static function fail($message = self::FAIL_DEFAULT_MESSAGE, $data = [], $code = null, $time = 0)
     {
         if (true == is_array($message) && empty($data)) {
             $data = $message;

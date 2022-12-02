@@ -1,6 +1,6 @@
 <?php
 
-namespace app\common\lib;
+namespace app\common\tools;
 
 use think\helper\Str;
 /**
@@ -25,6 +25,16 @@ class ValidateTool
 		}
 	    return false;
 	}
+
+	/**
+     * 判断某个值是否有效
+     * @param mix $value
+     * @return boolean
+     */
+    public static function isValidValue($value){
+        return ($value || $value === 0 || $value === '0') && $value !== 'null';
+    }
+    
 
 
 	/**
@@ -115,17 +125,7 @@ class ValidateTool
      */
     public static function isHttps()
     {
-        return isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] && $_SERVER['HTTPS'] != 'off';
+        return request()->isSsl();
     }
 
-	/**
-	 * 判断是否为元素字段
-	 * @param string $ele 元素字段
-	 * @return boolean  
-	 * @author xk
-	 */
-	public static function isEle($ele)
-	{
-	    return Str::startsWith($ele,'ele_');
-	}
 }

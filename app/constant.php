@@ -3,6 +3,8 @@ declare (strict_types = 1);
 
 // 全局常量
 
+define('SNOW_FLAKE_WORKER_ID', 0);//雪花算法工作机器ID
+
 // 排序默认值
 define('ORDER_VALUE', 100000);
 

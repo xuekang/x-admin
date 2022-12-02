@@ -14,10 +14,9 @@ use app\common\tools\StringTool;
 class BaseLogic
 {
 
-    protected $request_url;//请求地址
-    protected $token;
-    protected $client;//客户端,例 pc，mobile
-    protected $sys_time;//系统时间 int
+    static protected $request_url;//请求地址
+    static protected $token;
+    static protected $sys_time;//系统时间 int
 
 
     public function __construct()

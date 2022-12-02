@@ -10,15 +10,17 @@ use think\facade\Cache;
 use think\facade\Db;
 use app\api\logic\SearchCode;
 use app\code_name\logic\parseCode;
+use app\common\tools\SnowFlake;
 use app\sql_tool\logic\sqlParser;
 
 class Test extends Base
 {
 	public function test()
 	{
-		$L = new parseCode();
-		$data = $L->parseV2('员工入职');
-		halt($data);
+		dump(make_id_code());
+		// $L = new parseCode();
+		// $data = $L->parseV2('员工入职');
+		// halt($data);
 
 		// $str = 'Customer information';
 

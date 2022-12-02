@@ -17,9 +17,9 @@ Route::miss(function() {
     return '404 Not Found!';
 }); //强制路由
 
-//测试
-// Route::group('test', function () {
-//     Route::any('test', 'test');
-//     Route::any('test1', 'test1');
-// })->prefix('TestController/');
+//用户管理
+Route::group('User', function () {
+    Route::any('add', 'add');
+    Route::any('edit', 'edit');
+})->prefix('UserController/');
 
