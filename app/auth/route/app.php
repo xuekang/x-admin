@@ -23,3 +23,11 @@ Route::group('User', function () {
     Route::any('edit', 'edit');
 })->prefix('UserController/');
 
+
+//登录
+Route::group('Login', function () {
+    Route::any('loginIn', 'loginIn');
+    Route::any('getUserInfo', 'getUserInfo');
+    Route::any('loginOut', 'loginOut');
+})->prefix('LoginController/');
+

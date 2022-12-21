@@ -17,6 +17,7 @@ class BaseLogic
     static protected $request_url;//请求地址
     static protected $token;
     static protected $sys_time;//系统时间 int
+    static protected $client;//客户端
 
 
     public function __construct()
@@ -32,13 +33,13 @@ class BaseLogic
      */
     public function getRequestUrl()
     {
-        if($this->request_url){
-            return $this->request_url;
+        if(self::$request_url){
+            return self::$request_url;
         }
 
         $request_url = strtolower(request()->root() . '/' . request()->pathinfo());
         $request_url = implode('/',array_filter(explode('/',$request_url)));
-        return $this->request_url = $request_url;
+        return self::$request_url = $request_url;
     }
 
     /**
@@ -47,10 +48,10 @@ class BaseLogic
      */
     public function getToken()
     {
-        if($this->token){
-            return $this->token;
+        if(self::$token){
+            return self::$token;
         }
-        return $this->token = request()->header('token', '');
+        return self::$token = request()->header('token', '');
     }
 
     /**
@@ -59,10 +60,10 @@ class BaseLogic
      */
     public function getSysTime()
     {
-        if($this->sys_time){
-            return $this->sys_time;
+        if(self::$sys_time){
+            return self::$sys_time;
         }
-        return $this->sys_time = request()->sys_time ? request()->sys_time : time();
+        return self::$sys_time = request()->sys_time ? request()->sys_time : time();
     }
 
     /**
@@ -71,10 +72,10 @@ class BaseLogic
      */
     public function getClient()
     {
-        if($this->client){
-            return $this->client;
+        if(self::$client){
+            return self::$client;
         }
-        return $this->client = request()->header('client', DEFAULT_CLIENT);
+        return self::$client = request()->header('client', DEFAULT_CLIENT);
     }
 
     /**
