@@ -4,21 +4,20 @@ namespace app\common\tools;
 
 use think\helper\Str;
 
-
 /**
  * 字符串相关工具类
  */
 class StringTool
 {
 	/**
-     * 生成全局唯一id
+     * 生成全局唯一编码
      * @param string $prefix 前缀
      * @param int $length 长度
-     * @return string
+     * @return string 默认返回16位长度字符串
      * @author xk
      */
     public static function createGuid($prefix='',$length=0){
-        $uuid = md5(uniqid(strval(mt_rand()), true));
+        $uuid = md5(uniqid(strval(microtime(true) * 1000 . mt_rand()), true));
 
         if($length){
             $uuid = substr($uuid,0,$length);

@@ -5,8 +5,8 @@ namespace app\common\tools;
 
 Class SnowFlake
 {
-    /** 开始时间截 (2020-08-18 9:05:37) */
-    const twepoch = 1597712737000;
+    /** 开始时间截 (2020-01-01 00:00:00) */
+    const twepoch = 1577808000000;
 
     /** 机器id所占的位数 */
     const workerIdBits = 10;
@@ -35,7 +35,7 @@ Class SnowFlake
     //上次生成ID的时间截
     static $lastTimestamp = -1;
 
-    /***
+    /**
      * 构造函数：设置当前机器id
      * SnowflakeIdWorker constructor.
      * @param $workerId
@@ -54,7 +54,10 @@ Class SnowFlake
         $this->workerId = $workerId;
     }
 
-
+    /**
+     * 生成ID
+     * @return int ID号，18位数字
+     */
     public function nextId(){
         //获取当前毫秒时间戳
         $timestamp = $this->timeGen();
@@ -94,7 +97,7 @@ Class SnowFlake
             self::$sequence;
     }
 
-    /****
+    /**
      * 阻塞到下一个毫秒，直到获得新的时间戳
      * @param $lastTimestamp 上次生成ID的时间截
      * @return float 当前毫秒时间戳
@@ -111,7 +114,7 @@ Class SnowFlake
     }
 
 
-    /***
+    /**
      * 返回当前毫秒时间戳
      * @return float
      */

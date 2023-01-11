@@ -9,10 +9,11 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 use think\facade\Route;
+use app\common\tools\JsonService;
 
 Route::miss(function() {
-    return '404 Not Found!';
-});
+    return json(JsonService::fail('该未找到该数据接口', [], 10002));
+}); //强制路由
 
 Route::get('think', function () {
     return 'hello,ThinkPHP6!';

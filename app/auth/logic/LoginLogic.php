@@ -83,13 +83,17 @@ class LoginLogic extends BaseLogic
 		my_throw_if(!$token,'未获取到token');
 
 		$user_info = session($token);
-		my_throw_if(!$user_info,'未登录');
+		my_throw_if(!$user_info,'未登录',10001);
 
 		$user_data = $user_info['origin'];
 		$show_user_info = [
 			'token'=>$token,
 			'user_real_name'=>$user_data['user_real_name'],
 			'user_nick_name'=>$user_data['user_nick_name'],
+			'name'=>$user_data['user_real_name'],
+			'roles'=>['admin'],
+			'avatar'=>'',
+			'introduction'=>'',
 		];
 
 		return $show_user_info;

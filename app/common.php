@@ -9,16 +9,16 @@ require_once __DIR__ . '/constant.php';
 /** 自定义抛出错误
  */
 if (!function_exists('my_throw')) {
-	function my_throw($err) {
-		throw new RuntimeException($err);
+	function my_throw($message,$code=0) {
+		throw new RuntimeException($message,$code);
 	}
 }
 
 /** 自定义按条件抛出错误
  */
 if (!function_exists('my_throw_if')) {
-	function my_throw_if($condition,$err) {
-		throw_if($condition,new RuntimeException($err));
+	function my_throw_if($condition,$message,$code=0) {
+		$condition && my_throw($message,$code);
 	}
 }
 

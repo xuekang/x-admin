@@ -3,9 +3,7 @@ declare (strict_types=1);
 
 namespace app;
 
-use think\helper\Str;
-use think\helper\Arr;
-use app\common\tools\StringTool;
+use app\common\traits\BaseLogicToolTrait;
 
 /**
  * 逻辑类基类
@@ -13,6 +11,7 @@ use app\common\tools\StringTool;
  */
 class BaseLogic
 {
+    use BaseLogicToolTrait;
 
     static protected $request_url;//请求地址
     static protected $token;
@@ -76,16 +75,5 @@ class BaseLogic
             return self::$client;
         }
         return self::$client = request()->header('client', DEFAULT_CLIENT);
-    }
-
-    /**
-     * 生成全局唯一id
-     * @param string $prefix 前缀
-     * @param int $length 长度
-     * @return string
-     * @author xk
-     */
-    public function createGuid($prefix='',$length=0){
-        return StringTool::createGuid($prefix,$length);
     }
 }
