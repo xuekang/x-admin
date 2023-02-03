@@ -14,6 +14,43 @@ class ArrayTool
     const SELECT_FIELD_VALUE = 'value';//selet选项值默认字段
     const SELECT_FIELD_LABEL = 'label';//selet选项显示值默认字段
 
+
+    /**
+     * 数组深度合并（递归合并，后者会覆盖前者）
+     * @param array $array
+     * @param array $mergeArray
+     * @return array
+     */
+    public static function deepMerge(array &$array,array ...$mergeArray): array
+    {
+        foreach ($mergeArray as $item){
+            self::mergeOne($array,$item); //对每个待合并数组执行合并函数
+        }
+        return $array;
+    }
+    //如果仅有两个数组需要合并，也可以直接使用此函数
+    public static function mergeOne(&$array,$pushArray)
+    {
+        foreach ($pushArray as $key=>$item){ //通过键值循环
+            if (is_array($item)){ //如果待合并元素同样为数组，进行深度合并
+                if(isset($array[$key])&&is_array($array[$key])){ //如果原数组同键名对应元素同样为数组
+                    self::mergeOne($array[$key],$item); //递归深度合并
+                }else{//如果原数组同键名对应元素不是数组，直接覆盖
+                    $array[$key]=$item;
+                }
+            }else{ //如果待合并元素非数组，直接通过键名赋值
+                $array[$key]=$item;
+            }
+        }
+    }
+
+    
+
+
+
+
+
+
     /**
      * 将键值对数组转为select选项数组
      * @param array $data 键值对数组 ['选项值1'=>'选项名称1','选项值2'=>'选项名称2']
@@ -161,18 +198,6 @@ class ArrayTool
     }
 
     /**
-     * 二维数组中指定子项元素之和
-     */
-    public static function getChildSum(array $data, $filed)
-    {
-        $sum = 0;
-        foreach ($data as $item) {
-            $sum += (float)$item[$filed];
-        }
-        return $sum;
-    }
-
-    /**
      * 对数组进行分组聚合
      * @param array $array
      * @param array $keys
@@ -200,6 +225,22 @@ class ArrayTool
             return $result;
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * 两个数组一对多关联（list1.key1 = list2.key2）组成多维数组
@@ -354,61 +395,5 @@ class ArrayTool
         return $list[$key];
     }
 
-    /**
-     * 替换一维数组键名
-     * @param $data
-     * @param $keys
-     * @return mixed
-     */
-    public static function replaceKeys($data, $keys)
-    {
-        foreach ($data as $k => $item) {
-            if (isset($keys[$k])) {
-                $data[$keys[$k]] = $item;
-                unset($data[$k]);
-            }
-        }
-        return $data;
-    }
-
-    /**
-     * 替换二维数组键名
-     * @param $data
-     * @param $keys
-     * @return mixed
-     */
-    public static function arrayReplaceKeys($data, $keys)
-    {
-        foreach ($data as $k => $value) {
-            foreach ($value as $vk => $item) {
-                if (isset($keys[$vk])) {
-                    $data[$k][$keys[$vk]] = $item;
-                    unset($data[$k][$vk]);
-                }
-            }
-        }
-        return $data;
-    }
-
-    /**
-     * 无限极分类树
-     * @param array $data
-     * @param int $parent_id
-     * @param int $level
-     * @return array
-     */
-    public static function getTree($data = [], $filterKeys = [], $parent_id = "", $level = 0, $parent_field = "pid", $id_field = "id", $children_field = "children")
-    {
-        $tree = [];
-        if ($data && is_array($data)) {
-            foreach ($data as $v) {
-                if ($v[$parent_field] == $parent_id) {
-                    $children = self::getTree($data, $filterKeys, $v[$id_field], $level + 1, $parent_field, $id_field, $children_field);
-                    $v[$children_field] = $children;
-                    $tree[] = Arr::only($v, $filterKeys);
-                }
-            }
-        }
-        return $tree;
-    }
+    
 }

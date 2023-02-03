@@ -31,7 +31,7 @@ class LoginLogic extends BaseLogic
 		//验证用户状态
         my_throw_if($user_data['user_status'] != 1, '账号状态异常');
 
-		$token = $this->makeUserToken($user_data['id_code']);
+		$token = $this->makeUserToken($user_data['id']);
 
 		$user_info = [
 			'origin'=>$user_data,
@@ -66,9 +66,9 @@ class LoginLogic extends BaseLogic
      * @return boolean
      * @author xk
      */
-    public function makeUserToken($user_id_code)
+    public function makeUserToken($user_id)
     {
-        $str = $user_id_code . time();
+        $str = $user_id . time();
 
         return md5($str);
     }

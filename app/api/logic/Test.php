@@ -17,7 +17,23 @@ class Test extends Base
 {
 	public function test()
 	{
-		dump(make_id_code());
+		
+		$a = 1234567891;
+		dump(mb_strlen(strval($a)));
+
+		// $a = [
+		// 	'a'=>['a1'=>1,'a2'=>2],
+		// 	'aa'=>['aa1'=>11,'aa2'=>22],
+		// ];
+		// $b = [
+		// 	'a'=>['a1'=>111,'b2'=>222],
+		// 	'aa'=>['aa1'=>1111,'bb2'=>2222],
+		// ];
+
+		// dump(array_merge($a,$b),array_merge_recursive($a,$b),merge($a,$b));
+
+		// $this->testaa(null);
+		// dump(make_id());
 		// $L = new parseCode();
 		// $data = $L->parseV2('员工入职');
 		// halt($data);
@@ -38,6 +54,9 @@ class Test extends Base
 		return true;
 	}
 
+	public function testaa($a=1,$b=2){
+		dump($a,$b);
+	}
 
 	public function test1()
 	{
@@ -53,5 +72,15 @@ class Test extends Base
 		halt(22,$data);
 		return true;
 	}
+
+	public function makeId($num)
+	{
+		$num = $num > 0 ? $num : 1;
+		for ($i=0; $i < $num; $i++) { 
+			echo make_id() . '<br />';
+		}
+		die();
+	}
+
 }
 

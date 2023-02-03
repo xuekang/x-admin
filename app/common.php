@@ -22,10 +22,10 @@ if (!function_exists('my_throw_if')) {
 	}
 }
 
-/** 生成系统主键编码
+/** 生成系统主键id
  */
-if (!function_exists('make_id_code')) {
-	function make_id_code() {
-		return (new \app\common\tools\SnowFlake(SNOW_FLAKE_WORKER_ID))->nextId();
+if (!function_exists('make_id')) {
+	function make_id() {
+		return \app\common\tools\SnowFlakeTool::makeId();
 	}
 }

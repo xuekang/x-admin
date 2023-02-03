@@ -10,7 +10,14 @@ use app\api\logic\BaiduTranslate;
 
 class TestController extends Base
 {
-	
+	public function makeId()
+	{
+		$data = input('num');
+		$L = new Test();
+		$data = $L->makeId($data);
+		return $this->success($data);
+	}
+
 	public function test()
 	{
 		$data = input();

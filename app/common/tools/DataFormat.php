@@ -3,9 +3,10 @@
 namespace app\common\lib;
 
 use think\Exception;
+use think\helper\Arr;
 use app\common\lib\StringTool;
 use RuntimeException;
-use app\common\lib\ArrayTool;
+use app\common\tools\ArrayTool;
 
 /**
  * 数据格式化类
@@ -159,26 +160,21 @@ class DataFormat
     {
         $type = $ele_item['type'];
 
-        //数组类型转字符串
-        if (is_array($value)) {
-            $value = implode(',', $value);
-        }
-
-        //字符串过滤空格
-        if (is_string($value)) {
-            $value = trim($value);
-        }
-
         //时间类型
         switch ($type) {
             case FORM_TYPE_DATE:
-                $value = $value && !is_numeric($value) ? strtotime(strval($value)) : $value;
+                $value = self::fortmatDateToTimestamp($value);
                 break;
             case FORM_TYPE_DATETIME:
-                $value = $value && !is_numeric($value) ? strtotime(strval($value)) : $value;
+                $value = self::fortmatDateToTimestamp($value);
+                break;
+            case FORM_TYPE_DATARANGE:
+                $value = self::fortmatDateToTimestamp($value);
+                break;
+            case FORM_TYPE_DATETIMERANGE:
+                $value = self::fortmatDateToTimestamp($value);
                 break;
             default:
-
         }
 
         return $value;
@@ -214,18 +210,10 @@ class DataFormat
         //时间类型
         switch ($type) {
             case FORM_TYPE_DATE:
-                if($value){
-                    $value = is_numeric($value) ? date('Y-m-d', $value) : $value;
-                }else{
-                    $value = '';
-                }
+                $value = self::fortmatDateToStr($value,'Y-m-d',);
                 break;
             case FORM_TYPE_DATETIME:
-                if($value){
-                    $value = is_numeric($value) ? date('Y-m-d H:i:s', $value) : $value;
-                }else{
-                    $value = '';
-                }
+                $value = self::fortmatDateToStr($value,'Y-m-d H:i:s');
                 break;
             default:
         }
@@ -246,5 +234,62 @@ class DataFormat
             }
         }
         return $data;
+    }
+
+
+    /**
+     * 格式化日期为时间戳
+     * @param string|int|array $value 
+     * @return string 
+     */
+    public static function fortmatDateToTimestamp($value)
+    {
+        $arr = is_array($value) ? $value : explode(',', strval($value));
+        $val_result = [];
+        foreach ($arr as $k => $v) {
+            $v = trim($v);
+            $v = $v && !is_numeric($v) ? strtotime(strval($v)) : $v;
+            $val_result[] = $v;
+        }
+        $value = implode(',',$val_result);
+        return $value;
+    }
+
+    /**
+     * 格式化日期为字符串
+     * @param string|int|array $value 
+     * @param string $format 日期格式
+     * @return string 
+     */
+    public static function fortmatDateToStr($value, $format)
+    {
+        $arr = is_array($value) ? $value : explode(',',strval($value));
+        $val_result = [];
+        foreach ($arr as $val_item) {
+            if(!empty($val_item)){
+                $val_item = is_numeric($val_item) ? date($format, $val_item) : $val_item;
+            }else{
+                $val_item = '';
+            }
+            $val_result[] = $val_item;
+        }
+        $value = implode(',',$val_result);
+        return $value;
+    }
+
+    /**
+     * 获取json类型数据
+     * @param array $data 数据源
+     * @param string $key 支持点符号
+     * @param mix $default_value 默认值
+     * @return array 
+     */
+    public static function getJsonValue($data, $key,$default_value=[])
+    {
+        $value = Arr::get($data,$key,$default_value);
+        if($value && !is_array($value)){
+            $value = json_decode($value,true);
+        }
+        return $value;
     }
 }

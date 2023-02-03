@@ -91,7 +91,7 @@ class BaseModel extends Model
      * @param string|array $order 排序
      * @return array
      */
-    public static function getAll($where=[], $field = '*', $order = [], $group= '')
+    public static function getAll($where=[], $field = '*', $order = PAGE_ORDER, $group= '')
     {
         return self::myQuery($where, $field, $order, $group)
             ->select()
@@ -105,7 +105,7 @@ class BaseModel extends Model
      * @param string|array $order 排序
      * @return array
      */
-    public static function getColumn($column=null,$index_key=null,$where=[], $order = [], $group= '')
+    public static function getColumn($column=null,$index_key=null,$where=[], $order = PAGE_ORDER, $group= '')
     {
         $column = $column ? $column : '*';
         $index_key = $index_key ? $index_key : '';
@@ -130,7 +130,7 @@ class BaseModel extends Model
     {
         $real_name = self::getUserRealName();
         $time = self::getSysTime();
-        $data['id_code'] = make_id_code();
+        $data['id'] = make_id();
         $data['modifier'] = $real_name;
         $data['creator'] = $real_name;
         $data['create_time'] = $time;
@@ -188,7 +188,7 @@ class BaseModel extends Model
         $real_name = self::getUserRealName();
         $time = self::getSysTime();
         foreach ($data as $k => $v) {
-            $data[$k]['id_code'] = make_id_code();
+            $data[$k]['id'] = make_id();
             $data[$k]['modifier'] = $real_name;
             $data[$k]['creator'] = $real_name;
             $data[$k]['create_time'] = $time;
@@ -207,7 +207,7 @@ class BaseModel extends Model
         $time = self::getSysTime();
         foreach ($data as $k => $v) {
             if(!isset($v['id'])){
-                $data[$k]['id_code'] = make_id_code();
+                $data[$k]['id'] = make_id();
                 $data[$k]['creator'] = $real_name;
                 $data[$k]['create_time'] = $time;
             }
@@ -215,5 +215,76 @@ class BaseModel extends Model
             $data[$k]['update_time'] = $time;
         }
         return $this->saveAll($data)->toArray();
+    }
+
+    /**
+     * 翻译condition数组
+     * @param $condition
+     * @return array
+     */
+    public static function filterCondition($condition)
+    {
+        if(!empty($condition)){
+            foreach ($condition as &$v){
+                if(!empty($v[1]) && $v[1] == 'exp' && !empty($v[2])) $v[2] = Db::raw($v[2]);
+            }
+            unset($v);
+        }
+        return $condition;
+    }
+    
+    /** 通用条件查询分页方法
+     * @param array $where 查询条件
+     * @param int $start 起始位置
+     * @param int $limit 返回列，为-1时返回全量数据
+     * @param string|array $field 查询字段
+     * @param string|array $order 排序规则
+     * @param array $join 连表条件，数字成员：alias,join_array,join_array支持多次连表操作，二位数组传参
+     * @param array $with
+     * @return array
+     */
+    public static function list($condition=[], $start = PAGE_START, $limit = PAGE_LIMIT, $field = '*', $order = PAGE_ORDER, $join = [], $with = [])
+    {
+        $data = ['total' => 0, 'list' => []];
+
+        $condition = self::filterCondition($condition);
+        if(!empty($join)){
+            $joinKey   = array_keys($join);
+            $alias     = $joinKey[0];
+            $joinArray = $join[$alias];
+            $list      = self::alias($alias);
+            //多join组装
+            foreach ($joinArray as $v){
+                $list->join($v[0], $v[1], $v[2]??'INNER');
+            }
+            $list  = $list->where($condition);
+        }else{
+            $list  = self::where($condition);
+        }
+        if (!empty($with)) $list->with($with);
+        $count = clone $list;
+        if($limit > 0){
+            $list = $list->page($start, $limit);
+        }
+        $total = $count->count();
+        if($total){
+            $list = $list->field($field)->order($order)->select()->toArray();
+        }else{
+            $list = [];
+        }
+
+        return ['total' => $total, 'list' => $list];
+    }
+
+    public static function listO($param){
+        $condition = Arr::get($param,'condition',[]);
+		$start = Arr::get($param,'current_page',PAGE_START); 
+		$limit = Arr::get($param,'page_size',PAGE_LIMIT);
+        $field = Arr::get($param,'field','*');
+        $field = empty($field) ? '*' : $field;
+        $order = Arr::get($param,'order',PAGE_ORDER);
+        $join = Arr::get($param,'join',[]);
+        $with = Arr::get($param,'with',[]);
+        return self::list($condition,$start,$limit,$field,$order,$join,$with);
     }
 }

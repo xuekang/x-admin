@@ -3,10 +3,14 @@ declare (strict_types = 1);
 
 // 全局常量
 
-define('SNOW_FLAKE_WORKER_ID', 0);//雪花算法工作机器ID
-
 // 排序默认值
-define('ORDER_VALUE', 100000);
+define('ORDER_VALUE', 1000000);
+
+//分页参数默认值
+define('PAGE_START', 1);
+define('PAGE_LIMIT', 10);
+define('PAGE_ORDER', 'order_value asc,id asc');
+define('QUERY_LIMIT_MAX', 1000);    //全量记录查询上限
 
 //默认系统用户id
 define('DEFAULT_USER_ID', 0);
@@ -20,11 +24,7 @@ define('DEFAULT_CLIENT', 'pc');
 define('CLIENT_PC', 'pc');
 define('CLIENT_MOBILE', 'mobile');
 
-//分页参数默认值
-define('PAGE_START', 1);
-define('PAGE_LIMIT', 10);
-define('PAGE_ORDER', 'order_value asc');
-define('QUERY_LIMIT_MAX', 1000);    //全量记录查询上限
+
 
 
 

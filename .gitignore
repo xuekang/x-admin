@@ -1,7 +1,10 @@
+/.git
 /.idea
 /.vscode
 /vendor
 /runtime
 *.log
 .env
+.env.*
 *.lock
+.devcontainer

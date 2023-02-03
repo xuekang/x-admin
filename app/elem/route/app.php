@@ -17,18 +17,11 @@ Route::miss(function() {
     return json(JsonService::fail('该未找到该数据接口', [], 10002));
 }); //强制路由
 
-//用户管理
-Route::group('User', function () {
-    Route::any('list', 'list');
-    Route::any('add', 'add');
-    Route::any('edit', 'edit');
-})->prefix('UserController/');
+//通用
+Route::group('Index', function () {
+    Route::any('getTableConf', 'getTableConf');
+    Route::any('getFormConf', 'getFormConf');
+})->prefix('IndexController/');
 
 
-//登录
-Route::group('Login', function () {
-    Route::any('loginIn', 'loginIn');
-    Route::any('getUserInfo', 'getUserInfo');
-    Route::any('loginOut', 'loginOut');
-})->prefix('LoginController/');
 

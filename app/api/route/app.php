@@ -19,6 +19,7 @@ Route::miss(function() {
 
 //测试
 Route::group('test', function () {
+    Route::any('makeId', 'makeId');
     Route::any('test', 'test');
     Route::any('test1', 'test1');
 })->prefix('TestController/');

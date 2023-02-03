@@ -33,6 +33,15 @@ composer create-project topthink/think tp 6.0.*
 composer update topthink/framework
 ~~~
 
+启动内置服务器
+~~~
+php think run
+
+php think run -H tp.com -p 80 //支持制定IP和端口访问
+~~~
+
+
+
 ## 文档
 
 [完全开发手册](https://www.kancloud.cn/manual/thinkphp6_0/content)
