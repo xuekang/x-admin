@@ -1,10 +1,10 @@
 <?php
 
-namespace app\common\lib;
+namespace app\common\tools;
 
 use think\Exception;
 use think\helper\Arr;
-use app\common\lib\StringTool;
+use app\common\tools\StringTool;
 use RuntimeException;
 use app\common\tools\ArrayTool;
 
@@ -284,12 +284,33 @@ class DataFormat
      * @param mix $default_value 默认值
      * @return array 
      */
-    public static function getJsonValue($data, $key,$default_value=[])
+    public static function getJsonValue($data, $key, $default_value=[])
     {
         $value = Arr::get($data,$key,$default_value);
         if($value && !is_array($value)){
             $value = json_decode($value,true);
         }
+        $value = $value ? $value : $default_value;
         return $value;
+    }
+
+
+    /**
+     * 将大数字转为字符串
+     * @param array|int|string|mixed $data
+     * @return array|int|string|mixed 
+     */
+    public static function bigIntToStr($data)
+    {
+        if(is_array($data)){
+            foreach ($data as $k => $v) {
+                $k = self::bigIntToStr($k);
+                $v = self::bigIntToStr($v);
+                $data[$k] = $v;
+            }
+        }elseif(is_int($data) && mb_strlen($data) > 16 ){
+            $data = strval($data);
+        }
+        return $data;
     }
 }

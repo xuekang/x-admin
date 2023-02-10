@@ -12,6 +12,8 @@ define('PAGE_LIMIT', 10);
 define('PAGE_ORDER', 'order_value asc,id asc');
 define('QUERY_LIMIT_MAX', 1000);    //全量记录查询上限
 
+//默认系统id字段名
+define('ID', 'id');
 //默认系统用户id
 define('DEFAULT_USER_ID', 0);
 //默认系统用户中文名

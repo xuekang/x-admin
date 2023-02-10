@@ -33,15 +33,29 @@ class UserController extends BaseController
 
 	public function add()
 	{
-		$param = input();
-		(new UserLogic())->add($param);
+		$formData = input('formData');
+		(new UserLogic())->add($formData);
 		return $this->success();
 	}
 
 	public function edit()
 	{
-		$param = input();
-		(new UserLogic())->edit($param);
+		$formData = input('formData');
+		(new UserLogic())->edit($formData);
 		return $this->success();
+	}
+
+	public function del()
+	{
+		$formData = input('formData');
+		(new UserLogic())->del($formData);
+		return $this->success();
+	}
+
+	public function get()
+	{
+		$formData = input('formData');
+		$data = (new UserLogic())->get($formData);
+		return $this->success($data);
 	}
 }

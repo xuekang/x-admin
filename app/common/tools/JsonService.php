@@ -2,6 +2,7 @@
 declare (strict_types = 1);
 
 namespace app\common\tools;
+use app\common\tools\DataFormat;
 
 /**
  * 返回信息工具类
@@ -78,6 +79,7 @@ class JsonService
     public static function returnData($code, $message = '', $data = [], $time = 0)
     {
         $time = $time ? $time : time();
+        $data = DataFormat::bigIntToStr($data);
         return compact('code', 'message', 'data', 'time');
     }
 

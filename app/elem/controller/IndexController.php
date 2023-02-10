@@ -25,7 +25,7 @@ class IndexController extends BaseController
 	public function getTableConf()
 	{
 		$param = input();
-		$data = (new TableGeneratorLogic())->getTableConf($param);
+		$data = (new TableGeneratorLogic())->getTableConf($param['auth_id']);
 		return $this->success($data);
 	}
 

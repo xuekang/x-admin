@@ -37,7 +37,10 @@ class CommonException extends Handle
     public function render($request, Throwable $e): Response
     {
         // 如果处于调试模式
-        $app_debug = input('app_debug',env('app_debug'));
+        $app_debug = request()->header('appdebug');
+        if(is_null($app_debug)){
+            $app_debug = input('app_debug',env('app_debug'));
+        }
         if ($app_debug) {
             app()->debug(true);
             return parent::render($request, $e);

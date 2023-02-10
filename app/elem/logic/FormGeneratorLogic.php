@@ -4,8 +4,9 @@ declare (strict_types = 1);
 namespace app\elem\logic;
 
 use app\BaseLogic as Base;
-use app\common\lib\DataFormat;
+use app\common\tools\DataFormat;
 use app\common\tools\ArrayTool;
+use app\common\tools\StringTool;
 use app\model\SysElement;
 use think\helper\Arr;
 
@@ -47,26 +48,15 @@ class FormGeneratorLogic extends Base
 		$data['placeholder'] = $elem_item['elem_placeholder'];
 		$data['style'] = ['width'=>'100%'];
 		$data['clearable'] = true;
-
-		$extra_prop = DataFormat::getJsonValue($elem_item,'elem_extra_prop');
-		$data = ArrayTool::deepMerge($data,$extra_prop);
-
+		$data['placeholder'] = $this->getPlaceholder($elem_item);
+		
+		$elem_attrs = DataFormat::getJsonValue($elem_item,'elem_attrs');
+		$data = ArrayTool::deepMerge($data,$elem_attrs);
 		$data = $this->handleJsonField([
-			'__config__.regList'=>null
+			'__config__.regList'=>[]
 		],$data);
 
 		return $data;
-	}
-
-	/** 处理表单扩展属性
-     * @param array $elem_item
-	 * @return array
-     * @author xk
-     */
-	public function handleFormExtraProp($elem_item){
-		$extra_prop = $elem_item['elem_extra_prop'];
-		$extra_prop = $extra_prop ? (is_array($extra_prop) ? $extra_prop :  json_decode($elem_item['elem_extra_prop'],true)) : [];
-		return $extra_prop;
 	}
 
 	/** 生成字段配置
@@ -85,7 +75,9 @@ class FormGeneratorLogic extends Base
 		$data['required'] = false;
 		$data['layout'] = 'colFormItem';
 		$data['span'] = 24;
-		$data['regList'] = $elem_item['elem_form_validate'];;
+		$data['regList'] = $elem_item['elem_form_validate'];
+		$data['formId'] = $this->getSysTime();
+		$data['renderKey'] = StringTool::createGuid();
 
 		return $data;
 	}
@@ -125,7 +117,21 @@ class FormGeneratorLogic extends Base
      */
 	public function handleJsonField($fields,$data){
 		foreach ($fields as $field_name => $default_value) {
-			$data[$field_name] = DataFormat::getJsonValue($data,$field_name,$default_value);
+			Arr::set($data,$field_name,DataFormat::getJsonValue($data,$field_name,$default_value));
+		}
+		return $data;
+	}
+
+	/** 获取placeholder
+     * @param array $elem_item
+	 * @return string
+     * @author xk
+     */
+	public function getPlaceholder($elem_item){
+		$data = $elem_item['elem_placeholder'];
+		if(!$data) {
+			$text = $elem_item['elem_sele_code'] ? '请选择' : '请输入';
+			$data = $text . $elem_item['elem_cname'];
 		}
 		return $data;
 	}

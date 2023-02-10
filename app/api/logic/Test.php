@@ -10,6 +10,7 @@ use think\facade\Cache;
 use think\facade\Db;
 use app\api\logic\SearchCode;
 use app\code_name\logic\parseCode;
+use app\common\tools\DataFormat;
 use app\common\tools\SnowFlake;
 use app\sql_tool\logic\sqlParser;
 
@@ -17,9 +18,22 @@ class Test extends Base
 {
 	public function test()
 	{
+		$a = [
+			['id'=>8617396742779830562,'name'=>'a','k'=>0.11],
+			['id'=>13945967577402461,'name'=>'c','cccc'=>1312321],
+		];
+		$a  =array_column($a,null,'id');
+
+		$b = DataFormat::bigIntToStr($a);
+		dump($b);
+		// 7024824711360022993
+		// 7029854217791604981
 		
-		$a = 1234567891;
-		dump(mb_strlen(strval($a)));
+		// 8617396742779830562
+		// $a = ['a'=>8617396742779830562];
+		// $b = json_encode($a);
+		// $c = json_decode($b,true);
+		// dump(gettype(9617396742779830562),gettype(17978812896666957068),is_long(9617396742779830562),gettype($b),gettype($c),$b,$c);
 
 		// $a = [
 		// 	'a'=>['a1'=>1,'a2'=>2],

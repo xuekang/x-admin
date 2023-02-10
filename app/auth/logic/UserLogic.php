@@ -18,6 +18,8 @@ class UserLogic extends Base
 
 	public function add($param)
 	{
+		my_throw_if(empty($param['user_name']),'用户名为必须项');
+		my_throw_if(empty($param['user_password']),'用户密码为必须项');
 		$param['user_password'] = password_hash($param['user_password'], PASSWORD_BCRYPT);
 
 		SysUser::myCreate($param);
@@ -28,6 +30,15 @@ class UserLogic extends Base
 		SysUser::mySave($param);
 	}
 
+	public function del($param)
+	{
+		SysUser::mySoftDel($param[ID]);
+	}
 
+	public function get($param)
+	{
+		$data = SysUser::findOrEmpty($param[ID])->toArray();
+		return $data;
+	}
 }
 
