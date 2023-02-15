@@ -8,6 +8,7 @@ use app\common\tools\HttpTool;
 use think\helper\Str;
 use think\facade\Db;
 use think\helper\Arr;
+use app\model\SysUserRoleRele;
 
 /**
  * 登录
@@ -90,12 +91,17 @@ class LoginLogic extends BaseLogic
 		my_throw_if(!$user_info,'未登录',10001);
 
 		$user_data = $user_info['origin'];
+		$user_id = $user_data['id'];
+		$roles = SysUserRoleRele::where('usro_user_id',$user_id)->column('usro_role_id');
+		$user_info['origin']['roles'] = $user_data['roles'] = $roles;
+		
 		$show_user_info = [
+			'user_id'=>$user_id,
 			'token'=>$token,
 			'user_real_name'=>$user_data['user_real_name'],
 			'user_nick_name'=>$user_data['user_nick_name'],
 			'name'=>$user_data['user_real_name'],
-			'roles'=>['admin'],
+			'roles'=>$roles,
 			'avatar'=>'',
 			'introduction'=>'',
 		];
@@ -106,7 +112,7 @@ class LoginLogic extends BaseLogic
 
 		//权限数据
 		$AuthAplLogic = new AuthAplLogic();
-		$auth = $AuthAplLogic->getUserAuth();
+		$auth = $AuthAplLogic->getUserAuth($user_data);
 		$this->cacheUserAuth($token,$auth);
 		$show_user_info['auth'] = $auth;
 

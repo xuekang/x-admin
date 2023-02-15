@@ -7,7 +7,9 @@ use app\BaseLogic as Base;
 use app\common\tools\ArrayTool;
 use app\common\tools\DataFormat;
 use app\common\tools\HttpTool;
-use app\model\SysUser;
+use app\model\SysUserRoleRele;
+use app\model\SysRole;
+use app\model\SysRoleAuthRele;
 use think\helper\Arr;
 use app\model\SysAuth;
 
@@ -19,13 +21,12 @@ class AuthAplLogic extends Base
 	protected $valid_auth = [];
 
 	/** 生成单个按钮表单数据
-     * @param array $btn_item
-	 * @param array $btn_form_ele_list
+	 * @param array 
 	 * @return array
      * @author xk
      */
-	public function getUserAuth(){
-		$auth_list = $this->getValidAuth();
+	public function getUserAuth($user_data){
+		$auth_list = $this->getValidAuth($user_data);
 		list($menu_list,$button_list) = $this->splitMenuAndButton($auth_list);
 		$menu = $this->makeMenu($menu_list);
 		$button = $this->makeButton($button_list);
@@ -35,12 +36,28 @@ class AuthAplLogic extends Base
 
 
 	/** 获取有效权限数据
-     * @param array $btn_item
+     * @param array 
 	 * @return array
      * @author xk
      */
-	public function getValidAuth(){
-		$data =  SysAuth::getAll();
+	public function getValidAuth($user_data){
+		$roles = Arr::get($user_data,'roles',[]);
+		$is_super_mg = Arr::get($user_data,'user_is_super_mg',0);
+
+		
+		if($is_super_mg){
+			$data =  SysAuth::getAll();
+		}else{
+			if(!$roles) return [];
+
+			$data = SysRoleAuthRele::alias('r')
+			->where('roau_role_id','in',$roles)
+			->join('sys_auth a','a.id = r.roau_auth_id')
+			->where('a.delete_time',0)
+			->select()->toArray();
+		}
+		
+		
 		return $data;
 	}
 
