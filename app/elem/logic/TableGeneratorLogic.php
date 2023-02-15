@@ -12,7 +12,6 @@ use app\model\SysElemTableEle;
 use app\model\SysAuth;
 use app\model\SysElemBtn;
 use app\model\SysElemBtnFormEle;
-
 use app\elem\logic\FormGeneratorLogic;
 
 class TableGeneratorLogic extends Base
@@ -133,6 +132,13 @@ class TableGeneratorLogic extends Base
 		$btn_list = SysElemBtn::getAll([
 			['ebtn_rele_auth','in',$btn_auth]
 		]);
+		$btn_list = SysElemBtn::alias('b')
+		->where('ebtn_rele_auth','in',$btn_auth)
+		->join('sys_auth a','a.id = b.ebtn_rele_auth')
+		->where('a.delete_time',0)
+		->field('a.auth_route_name,b.*')
+		->select()->toArray();
+		
 
 		$btn_form_ele_list = SysElemBtnFormEle::alias('bfe')
 		->where('ebfe_rele_ebtn','in',array_column($btn_list,'id'))
@@ -163,6 +169,7 @@ class TableGeneratorLogic extends Base
 		$data = [
 			'renderKey'=>StringTool::createGuid(),
 			'auth_id'=>$btn_item['ebtn_rele_auth'],
+			'auth_route_name'=>$btn_item['auth_route_name'],
 			'type'=>$btn_item['ebtn_style_type'],
 			'text'=>$btn_item['ebtn_name'],
 			'actionType'=>$btn_item['ebtn_action_type'],

@@ -104,15 +104,15 @@ class AuthAplLogic extends Base
      * @author xk
      */
 	public function makeButton($button_list){
-		$data = [];
-		foreach ($button_list as $k => $v) {
-			$key = $v['auth_pid'];
-			if(isset($data[$key])){
-				$data[$key][] = $v['id'];
-			}else{
-				$data[$key] = [$v['id']];
-			}
-		}
+		$data = array_column($button_list,'auth_route_name');
+		// foreach ($button_list as $k => $v) {
+		// 	$key = $v['auth_pid'];
+		// 	if(isset($data[$key])){
+		// 		$data[$key][] = $v['id'];
+		// 	}else{
+		// 		$data[$key] = [$v['id']];
+		// 	}
+		// }
 		return $data;
 	}
 

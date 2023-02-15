@@ -14,10 +14,18 @@ use app\common\tools\ArrayTool;
 use app\common\tools\DataFormat;
 use app\common\tools\SnowFlake;
 use app\sql_tool\logic\sqlParser;
+use app\model\SysElemBtn;
 
 class Test extends Base
 {
-	public function test()
+	public function test(){
+		$a = SysElemBtn::alias('b')
+		->join('sys_auth a','a.id = b.ebtn_rele_auth')
+		->field('b.ebtn_rele_auth as auth_id,b.*')
+		->select()->toArray();
+		dump($a);
+	}
+	public function test2()
 	{
 		// $redis = new \Redis();
 		// $conf = config('cache.stores.redis');
