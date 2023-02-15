@@ -44,8 +44,58 @@ class ArrayTool
         }
     }
 
+    /**
+     * 过滤指定键，支持移除指定键和保留指定键，支持无限极
+     * @param array $array
+     * @param string|array $keys
+     * @param string|callable $mode ,默认remove:删除；save:保留；可定义方法；
+     * @param string $children_key
+     * @return array
+     */
+    public static function filterKey(array &$array, $keys, $mode='remove',$children_key = 'children'){
+        $keys = is_array($keys) ? $keys : explode(',',$keys);
+        if(self::isIndex($array)){
+            foreach ($array as $k => $v) {
+                self::filterKey($array[$k], $keys,$mode,$children_key);
+            }
+        }else{
+            foreach ($array as $k => $v) {
+                if(is_callable($mode)){
+                    if($mode($v,$k)){
+                        unset($array[$k]);
+                    }
+                }elseif ($mode == 'save') {
+                    if(!(in_array($k,$keys) && $k == $children_key)){
+                        unset($array[$k]);
+                    }
+                }else{
+                    if(in_array($k,$keys)){
+                        unset($array[$k]);
+                    }
+                }
+                
+            }
+            if(isset($array[$children_key])){
+                self::filterKey( $array[$children_key], $keys,$mode,$children_key);
+            }
+        }
     
+    
+        return $array;
+    }
 
+    /**
+     * 是否为索引数组
+     * @param array $array
+     * @return boolean
+     */
+    public static function isIndex($array) {
+        if(is_array($array)) {
+            $keys = array_keys($array);
+            return $keys === array_keys($keys);
+        }
+        return false;
+    }
 
 
 

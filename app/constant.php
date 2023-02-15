@@ -21,12 +21,14 @@ define('DEFAULT_USER_REAL_NAME', '系统');
 
 //默认系统客户端编码
 define('DEFAULT_CLIENT', 'pc');
-
 //用户设备类型
 define('CLIENT_PC', 'pc');
 define('CLIENT_MOBILE', 'mobile');
 
-
+//权限类型
+define('AUTH_TYPE_MENU', 1);
+define('AUTH_TYPE_PAGE', 2);
+define('AUTH_TYPE_BUTTON', 3);
 
 
 
@@ -113,8 +115,5 @@ define('FORM_TYPE_SELECTAJAX', 'select_ajax');
 define('FORM_TYPE_CASCADEAJAX', 'cascade_ajax');
 
 
-//权限类型
-define('AUTH_TYPE_MENU', 'menu');
-define('AUTH_TYPE_PAGE', 'page');
-define('AUTH_TYPE_BUTTON', 'button');
+
 

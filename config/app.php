@@ -32,5 +32,7 @@ return [
 
     ///////////自定义应用配置
     //超级密码
-    'root_pw' => env('app.root_pw',''),
+    'root_pw' => env('app.root_pw','123456'),
+    //用户登录token有效时长
+    'user_token_expire' => env('app.user_token_expire',8 * 3600),
 ];

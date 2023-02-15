@@ -15,24 +15,32 @@ class DataFormat
 {
     
 	/**
-     * 获取前端所需级联选择数据(支持无限极)
+     * 生成树结构数据(支持无限极)
      * @param array $list 传入数据,二维数组
-     * @param string $id_name id字段名
-     * @param string $pid_name pid字段名
-     * @param int $root  根节点id
-     * @param string $children_name  children字段名
-     * @param array $extend 扩展属性
-     *      format:array，指定数据格式，默认空数组,例["label"=>"auth_name","value"=>"auth_id"]
-     * @return array [['label'=>'名称','value'=>'值','children'=>['label'=>'名称','value'=>'值']]]
+     * @param array $opts 扩展属性
+     * @param string $opts['id_key'] id字段名
+     * @param string $opts['pid_key'] pid字段名
+     * @param int|string $opts['root']  根节点id的值
+     * @param string $opts['children_key']  children字段
+     * @param array $opts['map_field']  映射字段，默认空数组，['新字段'=>'原字段']
+     * @param array|string $opts['save_field']  指定保留字段，默认保留全部
+     * @return array 
      */
-    public static function getCascadeSelect(array $list, $id_name='id', $pid_name='pid', $root = 0,$children_name='children',$extend=[])
+    public static function getTree(array $list,$opts=[])
     {
-        //数据格式化
-        $format = $extend['format'] ?? [];
-        if($format){
-            foreach($list as $k=>$v){
-                $list[$k]['label'] = $v[$format['label']];
-                $list[$k]['value'] = $v[$format['value']];
+        $id_key = Arr::get($opts,'id_key','id');
+        $pid_key = Arr::get($opts,'pid_key','pid');
+        $root = Arr::get($opts,'root',0);
+        $children_key = Arr::get($opts,'children_key','children');
+        $map_field = Arr::get($opts,'map_field',[]);
+        $save_field = Arr::get($opts,'save_field',[]);
+
+        //处理map_field
+        if($map_field){
+            foreach ($map_field as $new_field => $old_filed) {
+                foreach($list as $k=>$v){
+                    $list[$k][$new_field] = $v[$old_filed];
+                }
             }
         }
 
@@ -40,26 +48,32 @@ class DataFormat
         $packData = [];
         //将所有的分类id作为数组key
         foreach ($list as $k => $v) {
-            $packData[$v[$id_name]] = $v;
+            $packData[$v[$id_key]] = $v;
         }
         //利用引用，将每个分类添加到父类child数组中，这样一次遍历即可形成树形结构。
         foreach ($packData as $key => $val) {
             if($root){
-                if($val[$pid_name] == $root){
+                if($val[$pid_key] == $root){
                     $tree[] = &$packData[$key];
                 }else{
                     //找到其父类
-                    $packData[$val[$pid_name]][$children_name][] = &$packData[$key];
+                    $packData[$val[$pid_key]][$children_key][] = &$packData[$key];
                 }
             }else{
-                if($val[$pid_name] === 0 || $val[$pid_name] === '0' || $val[$pid_name] === ''){
+                if($val[$pid_key] === 0 || $val[$pid_key] === '0' || $val[$pid_key] === ''){
                     $tree[] = &$packData[$key];
                 }else{
                     //找到其父类
-                    $packData[$val[$pid_name]][$children_name][] = &$packData[$key];
+                    $packData[$val[$pid_key]][$children_key][] = &$packData[$key];
                 }
             }
         }
+
+        //save_field
+        if($save_field){
+            ArrayTool::filterKey($tree,$save_field,'save');
+        }
+
         return $tree;
     }
 

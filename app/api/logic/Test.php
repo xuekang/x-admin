@@ -10,6 +10,7 @@ use think\facade\Cache;
 use think\facade\Db;
 use app\api\logic\SearchCode;
 use app\code_name\logic\parseCode;
+use app\common\tools\ArrayTool;
 use app\common\tools\DataFormat;
 use app\common\tools\SnowFlake;
 use app\sql_tool\logic\sqlParser;
@@ -18,14 +19,67 @@ class Test extends Base
 {
 	public function test()
 	{
-		$a = [
-			['id'=>8617396742779830562,'name'=>'a','k'=>0.11],
-			['id'=>13945967577402461,'name'=>'c','cccc'=>1312321],
-		];
-		$a  =array_column($a,null,'id');
+		// $redis = new \Redis();
+		// $conf = config('cache.stores.redis');
+		// $redis->pconnect($conf['host'],intval($conf['port']));
+		// $redis->auth($conf['password']);
+		// $redis->select(intval($conf['select']));
+		// $redis->hMset('token',['a'=>'aaa']);
+		// dump($redis,$conf);
+		$a = [[
+			'id'=>1,
+			'code'=>1,
+			'name'=>"a1",
+			'children'=>[
+				'id'=>11,
+				'code'=>11,
+				'name'=>"a11",
+				'children'=>[
+					'id'=>111,
+					'code'=>111,
+					'name'=>"a111"
+				]
+			]
+		]];
+		// function removeKey(&$array,$keys,  $childKey = 'children'){
+		// 	$keys = is_array($keys) ? $keys : explode(',',$keys);
+		// 	// if(isset($array[$key])){
+		// 	// 	unset($array[$key]);
+		// 	// }
+		// 	foreach ($array as $k => $v) {
+		// 		if(in_array($k,$keys)){
+		// 			unset($array[$k]);
+		// 		}
+		// 	}
+		// 	dump($array,$keys);
+		// 	if(isset($array[$childKey])){
+		// 		removeKey( $array[$childKey], $keys,$childKey);
+		// 	}
+		
+		// 	return $array;
+		// }
+		// $a = Cache::getDefaultDriver();
+		function my1($e,$i){
+			
+		}
+		$b0 = [1,2,3];
+		$b4 = [1,2,'c'=>3];
+		$b1 = ['a'=>1,'b'=>2,'c'=>[3]];
+		$b2 = ['a'=>1,'b'=>2,'c'=>['c'=>3]];
+		$b3 = [['a'=>1,'b'=>2,'c'=>3],['a'=>1,'b'=>2,'c'=>3]];
 
-		$b = DataFormat::bigIntToStr($a);
-		dump($b);
+		$a1 = ArrayTool::filterKey($a,'id');
+		dump(1111111111,$a1,$a);
+
+		// $b = app('cacheKey')->userTokenKey('aaa');
+		// $a = [
+		// 	['id'=>8617396742779830562,'name'=>'a','k'=>0.11],
+		// 	['id'=>13945967577402461,'name'=>'c','cccc'=>1312321],
+		// ];
+		// $a  =array_column($a,null,'id');
+
+		// $b = DataFormat::bigIntToStr($a);
+		
 		// 7024824711360022993
 		// 7029854217791604981
 		

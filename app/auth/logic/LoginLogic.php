@@ -9,6 +9,9 @@ use think\helper\Str;
 use think\facade\Db;
 use think\helper\Arr;
 
+/**
+ * 登录
+ */
 class LoginLogic extends BaseLogic
 {
 	/** 登录
@@ -33,17 +36,18 @@ class LoginLogic extends BaseLogic
 
 		$token = $this->makeUserToken($user_data['id']);
 
-		$user_info = [
+		
+		//缓存用户信息
+		$cache_user_info = [
 			'origin'=>$user_data,
 			'token'=>$token,
-			'login_time'=>time()
+			'login_time'=>$this->getSysTime()
 		];
+		$this->cacheUserInfo($token,$cache_user_info);
 
 		$show_user_info = [
 			'token'=>$token,
 		];
-
-		session($token,$user_info);
 
 		return $show_user_info;
 	}
@@ -62,7 +66,7 @@ class LoginLogic extends BaseLogic
         return false;
     }
 
-	/** 验证密码
+	/** 生成用户token
      * @return boolean
      * @author xk
      */
@@ -77,12 +81,12 @@ class LoginLogic extends BaseLogic
      * @return array
      * @author xk
      */
-	public function getUserInfo()
-	{
-		$token = $this->getToken();
+	public function getUserInfoByToken($token='')
+	{	
+		$token = $token ? $token : $this->getToken();
 		my_throw_if(!$token,'未获取到token');
 
-		$user_info = session($token);
+		$user_info = cache($this->getUserTokenKey($token));
 		my_throw_if(!$user_info,'未登录',10001);
 
 		$user_data = $user_info['origin'];
@@ -96,16 +100,52 @@ class LoginLogic extends BaseLogic
 			'introduction'=>'',
 		];
 
+		//缓存用户信息
+		$cache_user_info = array_merge($user_info,$show_user_info);
+		$this->cacheUserInfo($token,$cache_user_info);
+
+		//权限数据
+		$AuthAplLogic = new AuthAplLogic();
+		$auth = $AuthAplLogic->getUserAuth();
+		$this->cacheUserAuth($token,$auth);
+		$show_user_info['auth'] = $auth;
+
 		return $show_user_info;
+	}
+
+	/** 获取token的key
+	 * @return string
+     * @author xk
+     */
+	public function getUserTokenKey($token='')
+	{
+		$token = $token ? $token : $this->getToken();
+		return app('cacheKey')->userTokenKey($token);
 	}
 
 	/** 登出
      * @return void
      * @author xk
      */
-	public function loginOut()
+	public function loginOut($token='')
 	{
-		session(null);
+		cache($this->getUserTokenKey($token),NULL);
+	}
+
+	/** 缓存用户信息
+     * @return void
+     * @author xk
+     */
+	public function cacheUserInfo($token,$data){
+		cache($this->getUserTokenKey($token),$data,config('app.user_token_expire'));
+	}
+
+	/** 缓存用户权限
+     * @return void
+     * @author xk
+     */
+	public function cacheUserAuth($token,$data){
+		cache(app('cacheKey')->userAuthKey($token),$data,config('app.user_token_expire'));
 	}
 }
 

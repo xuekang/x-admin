@@ -19,7 +19,7 @@ class LoginController extends BaseController
 
 	public function getUserInfo()
 	{
-		$data = (new LoginLogic())->getUserInfo();
+		$data = (new LoginLogic())->getUserInfoByToken();
 		return $this->success($data);
 	}
 
