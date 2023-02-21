@@ -33,7 +33,7 @@ class UserController extends BaseController
 
 	public function add()
 	{
-		$formData = input('formData');
+		$formData = input("formData");
 		(new UserLogic())->add($formData);
 		return $this->success();
 	}

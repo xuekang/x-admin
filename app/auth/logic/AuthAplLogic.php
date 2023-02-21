@@ -12,6 +12,7 @@ use app\model\SysRole;
 use app\model\SysRoleAuthRele;
 use think\helper\Arr;
 use app\model\SysAuth;
+use think\facade\Db;
 
 /**
  * 权限应用
@@ -48,18 +49,42 @@ class AuthAplLogic extends Base
 		if($is_super_mg){
 			$data =  SysAuth::getAll();
 		}else{
-			if(!$roles) return [];
-
 			$data = SysRoleAuthRele::alias('r')
-			->where('roau_role_id','in',$roles)
 			->join('sys_auth a','a.id = r.roau_auth_id')
+			->where('roau_role_id','in',$roles)
 			->where('a.delete_time',0)
 			->select()->toArray();
+			$data = array_column($data,null,'id');
+			$data += SysAuth::getColumn(null,'id',[['auth_is_common','=',1]]);
+			
+			//加入父级权限标签数据
+			$data = $this->addParentAuthIds($data);
 		}
 		
+		array_multisort(array_column($data,'order_value'),SORT_ASC,array_column($data,'id'),SORT_ASC,$data);
 		
 		return $data;
 	}
+
+	//加入父级权限标签数据
+    public static function addParentAuthIds($data)
+    {
+        if(!$data) return $data;
+		$all_auth_ids = [];
+		foreach ($data as $k => $v) {
+			$all_auth_ids = array_merge($all_auth_ids,explode('-',$v['auth_path']));
+		}
+		$all_auth_ids  = array_unique(array_filter($all_auth_ids));
+
+		$origin = array_column($data,'id');
+		$diff = array_intersect($all_auth_ids,$origin);
+		if($diff){
+			$data = array_merge($data,SysAuth::getColumn(null,'id',[['id','in',$diff]]));
+		}
+
+        return $data;
+    }
+
 
 	/** 拆分菜单和按钮
      * @param array

@@ -19,10 +19,14 @@ use app\model\SysElemBtn;
 class Test extends Base
 {
 	public function test(){
-		$a = SysElemBtn::alias('b')
-		->join('sys_auth a','a.id = b.ebtn_rele_auth')
-		->field('b.ebtn_rele_auth as auth_id,b.*')
-		->select()->toArray();
+		// $a = SysElemBtn::alias('b')
+		// ->join('sys_auth a','a.id = b.ebtn_rele_auth')
+		// ->field('b.ebtn_rele_auth as auth_id,b.*')
+		// ->select()->toArray();
+		// $a = cache('auth1');
+		// dump(is_null($a));
+
+		$a = input('');
 		dump($a);
 	}
 	public function test2()

@@ -129,6 +129,16 @@ class LoginLogic extends BaseLogic
 		return app('cacheKey')->userTokenKey($token);
 	}
 
+	/** 获取权限的key
+	 * @return string
+     * @author xk
+     */
+	public function getUserAuthKey($token='')
+	{
+		$token = $token ? $token : $this->getToken();
+		return app('cacheKey')->userAuthKey($token);
+	}
+
 	/** 登出
      * @return void
      * @author xk
@@ -136,6 +146,7 @@ class LoginLogic extends BaseLogic
 	public function loginOut($token='')
 	{
 		cache($this->getUserTokenKey($token),NULL);
+		cache($this->getUserAuthKey($token),NULL);
 	}
 
 	/** 缓存用户信息
@@ -151,7 +162,7 @@ class LoginLogic extends BaseLogic
      * @author xk
      */
 	public function cacheUserAuth($token,$data){
-		cache(app('cacheKey')->userAuthKey($token),$data,config('app.user_token_expire'));
+		cache($this->getUserAuthKey($token),$data,config('app.user_token_expire'));
 	}
 }
 
