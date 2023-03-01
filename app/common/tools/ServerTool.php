@@ -1,18 +1,46 @@
 <?php
 
-namespace app\common\lib;
+namespace app\common\tools;
 
 /**
- * IP工具类
+ * 服务器信息工具类
  */
-class IPTool
+class ServerTool
 {
+    /**
+     * 获取服务器信息
+     * @return string|array
+     */
+    public static function getServer($name = '') {
+		if($name){
+            if(isset($_SERVER[$name])) {
+                return $_SERVER[$name];
+            }elseif($name === 'REQUEST_SCHEME'){
+                return request()->scheme();
+            }elseif($name === 'SERVER_NAME'){
+                return request()->host();
+            }else{
+                return request()->server($name);
+            }
+        }else{
+            $data = array_merge($_SERVER,request()->server());
+
+            if(!isset($data['REQUEST_SCHEME'])) $data['REQUEST_SCHEME'] = request()->scheme();
+
+            if(!isset($data['SERVER_NAME'])) $data['SERVER_NAME'] = request()->host();
+
+            return $data;
+        }
+	}
+
     /**
      * 获取ip地址
      * @return string
      */
-     public static function getIp()
+    public static function getIp()
     {
+        $request_ip = request()->ip();
+
         $realip = '';
         $unknown = 'unknown';
         if (isset($_SERVER)) {
@@ -44,6 +72,8 @@ class IPTool
             }
         }
         $realip = preg_match("/[\d\.]{7,15}/", $realip, $matches) ? $matches[0] : $unknown;
+
+        // dump($request_ip,$realip);
         return $realip;
     }
 
@@ -63,5 +93,31 @@ class IPTool
         }
         $json = json_decode($res, true);
         return $json;
+    }
+
+    /**
+     * 获取域名信息
+     * @param string $name
+     * @return string
+     */
+    public static function getDomainName($name='main_domain_name')
+    {
+        $app_config = config('app');
+        $domian_name = '';
+        if($name && isset($app_config[$name])) $domian_name = $app_config[$name];
+
+        if(!$domian_name) $domian_name = $app_config['main_domain_name'];
+
+        if(!$domian_name) $domian_name = self::getServer('HTTP_HOST');
+
+        $domian_name   = strtolower($domian_name); //首先转成小写
+        $hosts = parse_url($domian_name);
+        $host = $hosts['host'];
+        if(isset($hosts['port'])){
+            $host .= ':' . $hosts['port'];
+        }
+        $scheme = ValidateTool::isHttps() ? 'https://' : 'http:';
+
+        return $scheme . $host . '/';
     }
 }

@@ -126,7 +126,7 @@ class LoginLogic extends BaseLogic
 	public function getUserTokenKey($token='')
 	{
 		$token = $token ? $token : $this->getToken();
-		return app('cacheKey')->userTokenKey($token);
+		return app('Redis')->userTokenKey($token);
 	}
 
 	/** 获取权限的key
@@ -136,7 +136,7 @@ class LoginLogic extends BaseLogic
 	public function getUserAuthKey($token='')
 	{
 		$token = $token ? $token : $this->getToken();
-		return app('cacheKey')->userAuthKey($token);
+		return app('Redis')->userAuthKey($token);
 	}
 
 	/** 登出

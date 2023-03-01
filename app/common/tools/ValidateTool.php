@@ -128,4 +128,5 @@ class ValidateTool
         return request()->isSsl();
     }
 
+
 }

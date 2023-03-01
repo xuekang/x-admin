@@ -5,7 +5,7 @@ namespace app\common\lib;
 /**
  * 杂项工具类
  */
-class OtherTool
+class DumpTool
 {
     /**
      * 打印数据到文件

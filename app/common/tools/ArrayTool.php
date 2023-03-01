@@ -4,15 +4,17 @@ declare (strict_types = 1);
 
 namespace app\common\tools;
 
+use app\common\select\Select;
+use think\Exception;
 use think\helper\Arr;
+use think\helper\Str;
 
 /**
  * 数组相关工具类
  */
 class ArrayTool
 {
-    const SELECT_FIELD_VALUE = 'value';//selet选项值默认字段
-    const SELECT_FIELD_LABEL = 'label';//selet选项显示值默认字段
+
 
 
     /**
@@ -85,6 +87,56 @@ class ArrayTool
     }
 
     /**
+     * 过滤树形结构指定值，（支持无限极数据，子集符合,则父级也保留）
+     * @param array $data 传入数据,无限极数据，二维数据
+     * @param string|callable $search_key ,搜索关键词；可定义方法；
+     * @param array $opts 扩展属性
+     * @param string $opts['id_key'] id字段名
+     * @param string $opts['pid_key'] pid字段名
+     * @param string $opts['children_key']  children字段
+     * @param int|string $opts['root']  根节点id的值
+     * @return array 
+     */
+    public static function filterTreeValue(array $data,$search_key,$opts=[])
+    {
+        if(!$search_key) return $data;
+        $id_key = Arr::get($opts,'id_key',TREE_ID);
+        $pid_key = Arr::get($opts,'pid_key',TREE_PID);
+        $children_key = Arr::get($opts,'children_key',TREE_CHILDREN);
+        $path_key = Arr::get($opts,'path_key',TREE_PATH);
+        $search_key_field = Arr::get($opts,'search_key_field',SELECT_LABEL);
+
+        $normal_data = DataFormat::getFromTree($data,$opts);
+
+        $save_ids = [];
+        foreach ($normal_data as $k => $v) {
+            $flag = true;
+            if(is_callable($search_key)){
+                $flag = $search_key($v,$search_key);
+            }else{
+                $flag=  Str::contains($v[$search_key_field], $search_key);
+            }
+
+            if($flag && isset($v[$path_key])){
+                $save_ids = array_merge($save_ids,explode('-',$v[$path_key]));
+            }
+        }
+        $save_ids = array_filter($save_ids);
+        $save_ids = array_unique($save_ids);
+
+        $result_data = [];
+        foreach ($normal_data as $k => $v) {
+            if(in_array($v[$id_key],$save_ids)){
+                $result_data[] = $v;
+            }
+        }
+
+        $result_data = DataFormat::getTree($result_data,$opts);
+
+        return $result_data;
+    }
+
+    /**
      * 是否为索引数组
      * @param array $array
      * @return boolean
@@ -98,40 +150,25 @@ class ArrayTool
     }
 
 
-
-
-
-    /**
-     * 将键值对数组转为select选项数组
-     * @param array $data 键值对数组 ['选项值1'=>'选项名称1','选项值2'=>'选项名称2']
-     * @param string $select_field_value selet选项值字段
-     * @param string $select_field_label selet选项显示值字段
-     * @return array 将select选项数组 [['label'=>'选项名称1','value'=>'选项值1'],['label'=>'选项名称2','value'=>'选项值2']]
+     /**
+     * 判断数组是否为一维数组
+     * @param array $data
+     * @return boolean
+     * @author xk
      */
-    public static function makeSelectArr($data,$select_field_value=self::SELECT_FIELD_VALUE,$select_field_label=self::SELECT_FIELD_LABEL)
+    public static function isOneDimenArray(array $data)
     {
-        $result = [];
-        foreach ($data as $key => $val) {
-            $result[] = [$select_field_label => $val, $select_field_value => strval($key)];
+        $flag = false;
+        foreach ($data as $v) {
+            if (!is_array($v)) {
+                $flag = true;
+                break;
+            }
         }
-        return $result;
+        //count($data) == count($data, 1) 
+        return $flag;
     }
 
-    /**
-     * 将select选项数组转为键值对数组
-     * @param array $data 将select选项数组 [['label'=>'选项名称1','value'=>'选项值1'],['label'=>'选项名称2','value'=>'选项值2']]
-     * @param string $select_field_value selet选项值字段
-     * @param string $select_field_label selet选项显示值字段
-     * @return array 键值对数组 ['选项值1'=>'选项名称1','选项值2'=>'选项名称2']
-     */
-    public static function unMakeSelectArr($data,$select_field_value=self::SELECT_FIELD_VALUE,$select_field_label=self::SELECT_FIELD_LABEL)
-    {
-        $result = [];
-        foreach ($data as $k => $v) {
-            $result[$v['value']] = $v['label'];
-        }
-        return $result;
-    }
 
 
     /**
@@ -168,25 +205,6 @@ class ArrayTool
         return $_2d_array;
     }
 
-
-    /**
-     * 判断数组是否为一维数组
-     * @param array $data
-     * @return boolean
-     * @author xk
-     */
-    public static function isOneDimenArray(array $data)
-    {
-        $flag = false;
-        foreach ($data as $v) {
-            if (!is_array($v)) {
-                $flag = true;
-                break;
-            }
-        }
-        //count($data) == count($data, 1) 
-        return $flag;
-    }
 
     /**
      * 获取数组中重复的元素

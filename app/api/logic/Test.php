@@ -10,6 +10,7 @@ use think\facade\Cache;
 use think\facade\Db;
 use app\api\logic\SearchCode;
 use app\code_name\logic\parseCode;
+use app\common\tools\ServerTool;
 use app\common\tools\ArrayTool;
 use app\common\tools\DataFormat;
 use app\common\tools\SnowFlake;
@@ -26,9 +27,31 @@ class Test extends Base
 		// $a = cache('auth1');
 		// dump(is_null($a));
 
-		$a = input('');
-		dump($a);
+		// $a = ServerTool::getDomainName('file_domain_name');
+		// 	$url = 'https://shimo.im:22/docs';
+		// 	$url   = strtolower($url); //首先转成小写
+		// $hosts = parse_url($url);
+		// $host  = $hosts['host'];
+
+		// $l = Db::table('sys_auth')->select()->toArray();
+		// foreach ($l as $k => $v) {
+		// 	$item = [
+		// 		'id'=>$v['id'],
+		// 		'pid'=>$v['auth_pid'],
+		// 		'label'=>$v['auth_route_title'],
+		// 		'value'=>$v['id'],
+		// 		'path'=>$v['auth_path'],
+		// 	];
+		// 	$menu_data[] = $item;
+		// }
+		// $a = DataFormat::getTree($menu_data);
+		// $b = DataFormat::getFromTree($a);
+		// $c = ArrayTool::filterTreeValue($a,'用户');
+		$redis = app('Redis');
+		dump($redis);
 	}
+
+
 	public function test2()
 	{
 		// $redis = new \Redis();
@@ -83,7 +106,7 @@ class Test extends Base
 		$a1 = ArrayTool::filterKey($a,'id');
 		dump(1111111111,$a1,$a);
 
-		// $b = app('cacheKey')->userTokenKey('aaa');
+		// $b = app('Redis')->userTokenKey('aaa');
 		// $a = [
 		// 	['id'=>8617396742779830562,'name'=>'a','k'=>0.11],
 		// 	['id'=>13945967577402461,'name'=>'c','cccc'=>1312321],

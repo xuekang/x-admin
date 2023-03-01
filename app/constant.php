@@ -30,6 +30,14 @@ define('AUTH_TYPE_MENU', 1);
 define('AUTH_TYPE_PAGE', 2);
 define('AUTH_TYPE_BUTTON', 3);
 
+//数据结构类型
+define('TREE_ID', 'id');
+define('TREE_PID', 'pid');
+define('TREE_CHILDREN', 'children');
+define('TREE_PATH', 'path');
+define('TREE_LEVEL', 'level');
+define('SELECT_LABEL', 'label');
+define('SELECT_VALUE', 'value');
 
 
 //流程动作类型

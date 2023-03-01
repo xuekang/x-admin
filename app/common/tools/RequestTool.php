@@ -7,7 +7,7 @@ namespace app\common\tools;
 /**
  * http请求相关
  */
-class HttpTool
+class RequestTool
 {
 
      /**
@@ -135,52 +135,4 @@ class HttpTool
 
         return [$code,$msg,$data];
     }
-
-
-    // /**
-    //  * 通用curl请求
-    //  * @param string $url 访问的URL
-    //  * @param array $post post数据(不填则为GET)
-    //  * @param string  $cookies 提交的$cookies
-    //  * @param string  $return_cookie 是否返回$cookies
-    //  * @param array  $http_header 请求头
-    //  * @return array [错误码,错误信息,数据]
-    //  */
-    // public static function curlRequest($url, $post = [], $cookie = '', $return_cookie = 0, $http_header = [])
-    // {
-    //     $curl = curl_init();
-    //     curl_setopt($curl, CURLOPT_URL, $url);
-    //     curl_setopt($curl, CURLOPT_USERAGENT, 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)');
-    //     curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
-    //     curl_setopt($curl, CURLOPT_AUTOREFERER, 1);
-    //     if ($post) {
-    //         curl_setopt($curl, CURLOPT_POST, 1);
-    //         curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($post));
-    //     }
-    //     if ($cookie) {
-    //         curl_setopt($curl, CURLOPT_COOKIE, $cookie);
-    //     }
-    //     if (!empty($http_header)) {
-    //         curl_setopt($curl, CURLOPT_HTTPHEADER, $http_header);
-    //     }
-    //     curl_setopt($curl, CURLOPT_HEADER, $return_cookie);
-    //     curl_setopt($curl, CURLOPT_TIMEOUT, 10);
-    //     curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-
-    //     $data = curl_exec($curl);
-    //     $code = curl_errno($curl);
-    //     $msg = $code ? curl_error($curl) : '成功';
-
-    //     curl_close($curl);
-
-    //     if ($return_cookie) {
-    //         list($header, $body) = explode("\r\n\r\n", $data, 2);
-    //         preg_match_all("/Set\-Cookie:([^;]*);/", $header, $matches);
-    //         $data = [];
-    //         $data['cookie'] = substr($matches[1][0], 1);
-    //         $data['content'] = $body;
-    //     }
-
-    //     return [$code,$msg,$data];
-    // }
 }

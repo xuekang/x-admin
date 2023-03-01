@@ -30,9 +30,20 @@ return [
     // 显示错误信息
     'show_error_msg'   => false,
 
+
+
     ///////////自定义应用配置
     //超级密码
     'root_pw' => env('app.root_pw','123456'),
+
     //用户登录token有效时长
     'user_token_expire' => env('app.user_token_expire',8 * 3600),
+
+    //选项缓存过期时间,单位s
+    'select_cache_expire' => env('app.select_cache_expire',0),
+
+    //主域名
+    'main_domain_name' => env('app.domain_name',''),
+    //主域名
+    'file_domain_name' => env('app.file_domain_name',''),
 ];

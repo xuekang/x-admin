@@ -2,8 +2,10 @@
 
 namespace app\common\tools;
 
+use app\common\select\Select;
 use think\Exception;
 use think\helper\Arr;
+use think\helper\Str;
 use app\common\tools\StringTool;
 use RuntimeException;
 use app\common\tools\ArrayTool;
@@ -20,18 +22,18 @@ class DataFormat
      * @param array $opts 扩展属性
      * @param string $opts['id_key'] id字段名
      * @param string $opts['pid_key'] pid字段名
-     * @param int|string $opts['root']  根节点id的值
      * @param string $opts['children_key']  children字段
+     * @param int|string $opts['root']  根节点id的值
      * @param array $opts['map_field']  映射字段，默认空数组，['新字段'=>'原字段']
      * @param array|string $opts['save_field']  指定保留字段，默认保留全部
      * @return array 
      */
     public static function getTree(array $list,$opts=[])
     {
-        $id_key = Arr::get($opts,'id_key','id');
-        $pid_key = Arr::get($opts,'pid_key','pid');
+        $id_key = Arr::get($opts,'id_key',TREE_ID);
+        $pid_key = Arr::get($opts,'pid_key',TREE_PID);
+        $children_key = Arr::get($opts,'children_key',TREE_CHILDREN);
         $root = Arr::get($opts,'root',0);
-        $children_key = Arr::get($opts,'children_key','children');
         $map_field = Arr::get($opts,'map_field',[]);
         $save_field = Arr::get($opts,'save_field',[]);
 
@@ -77,6 +79,37 @@ class DataFormat
         return $tree;
     }
 
+    /**
+     * 从无限极获取二维数组数据
+     * @param array $list 传入数据,二维数组
+     * @param array $opts 扩展属性
+     * @param string $opts['children_key']  children字段
+     * @return array 
+     */
+    public static function getFromTree(array $tree,$opts=[],&$data=[],$path=[])
+    {
+        $id_key = Arr::get($opts,'id_key',TREE_ID);
+        $pid_key = Arr::get($opts,'pid_key',TREE_PID);
+        $children_key = Arr::get($opts,'children_key',TREE_CHILDREN);
+        $path_key = Arr::get($opts,'path_key',TREE_PATH);
+        $data = [];
+        foreach ($tree as $k => $v) {
+            $item = $v;
+            unset($item[$children_key]);
+            $path[] = $item[$id_key];
+            $item[$path_key] = implode('-',$path);
+            
+            $data[] = $item;
+            if(isset($v[$children_key])){
+                self::getFromTree($v[$children_key],$opts,$data,$path);
+            }
+        }
+
+        return $data;
+    }
+
+   
+
     /** 翻译code值
      * @param string|int|array $code [初始code值，如用户id集合，'1,2,3'或者[1,2,3]]
      * @param array $select_map [选项映射数据，一维数组,如[1=>'张三',2=>'李四',3=>'王五']]
@@ -117,7 +150,7 @@ class DataFormat
             
         }
         if($format_type == 'select'){
-            $data = ArrayTool::makeSelectArr($data_arr_new);
+            $data = Select::makeSelectArr($data_arr_new);
         }else{
             $data = implode(',', $data_arr_new);
         }

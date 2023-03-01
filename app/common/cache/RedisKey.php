@@ -3,12 +3,11 @@ declare (strict_types = 1);
 
 namespace app\common\cache;
 
-use app\BaseLogic as Base;
 
 /**
  * 缓存键规则
  */
-class cacheKey extends Base
+trait RedisKey
 {
     /** 
      * 用户token的key
