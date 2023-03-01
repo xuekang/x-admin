@@ -44,6 +44,6 @@ return [
 
     //主域名
     'main_domain_name' => env('app.domain_name',''),
-    //主域名
+    //文件主域名
     'file_domain_name' => env('app.file_domain_name',''),
 ];

@@ -184,12 +184,12 @@ class Select extends BaseLogic
         $value = [];
 
         //从配置文件获取
-        if (isset($this->selectDict[$code])) {
-            return $this->getSelectvalueFromFileDict($code,$param);
-        }
+        $value = $this->getSelectvalueFromFileDict($code,$param);
+        if($value !== false) return $value;
 
         //从redis中获取
-        ###todo
+        $value = $this->getSelectvalueFromRedis($code,$param);
+        if($value !== false) return $value;
 
 
         //数据库类选项定义
@@ -201,6 +201,8 @@ class Select extends BaseLogic
                 $value = $this->getSelectvalueFromTable($select_item, $param, $condition);
             }
             $value = $this->formatSelectValue($value);
+        }else{
+            $value = [];
         }
 
         return $value;
@@ -210,12 +212,12 @@ class Select extends BaseLogic
      * 根据选择文件字典获取选项数据
      * @param array $select 选项定义数据
      * @param string $search_key 搜索关键词
-     * @param array
+     * @param array|boolean
      * @author xk
      */
-    protected  function getSelectvalueFromFileDict($code, $search_key = ''){
+    protected  function getSelectvalueFromFileDict($code, $search_key){
+        if(!isset($this->selectDict[$code])) return false;
         $data = $this->selectDict[$code];
-        
         $data = $this->formatSelectValue($data);
         $data = $this->filterSelectValue($data,$search_key);
         return $data;
@@ -226,11 +228,16 @@ class Select extends BaseLogic
      * @param array $select 选项定义数据
      * @param string $search_key 搜索关键词
      * @param array $condition 动态查询条件
-     * @param array
+     * @param array|boolean
      * @author xk
      */
-    public function getSelectvalueFromRedis($select, $search_key = '',$condition=[]){
+    public function getSelectvalueFromRedis($code, $search_key){
         $data = [];
+        $key = app('Redis')->selectKey($code);
+        $data = app('Redis')->get($key);
+        if($data === false) return false;
+
+        $data = json_decode($data['sele_data'],true);
         $data = $this->formatSelectValue($data);
         $data = $this->filterSelectValue($data,$search_key);
         return $data;
@@ -244,7 +251,7 @@ class Select extends BaseLogic
      * @param array
      * @author xk
      */
-    public function getSelectvalueFromTable($select, $search_key = '',$condition=[])
+    public function getSelectvalueFromTable($select, $search_key,$condition=[])
     {
         if (!$select) {
             return [];

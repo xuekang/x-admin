@@ -20,6 +20,7 @@ Route::miss(function() {
 //通用
 Route::group('Tool', function () {
     Route::any('getSelect', 'getSelect');
+    Route::any('upload', 'upload');
 })->prefix('ToolController/');
 
 

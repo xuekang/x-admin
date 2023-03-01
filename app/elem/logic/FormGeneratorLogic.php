@@ -6,6 +6,7 @@ namespace app\elem\logic;
 use app\BaseLogic as Base;
 use app\common\tools\DataFormat;
 use app\common\tools\ArrayTool;
+use app\common\tools\ServerTool;
 use app\common\tools\StringTool;
 use app\model\SysElement;
 use think\helper\Arr;
@@ -49,6 +50,8 @@ class FormGeneratorLogic extends Base
 		$data['style'] = ['width'=>'100%'];
 		$data['clearable'] = true;
 		$data['placeholder'] = $this->getPlaceholder($elem_item);
+
+		$data = $this->handleFormType($data,$elem_item);
 		
 		$elem_attrs = DataFormat::getJsonValue($elem_item,'elem_attrs');
 		$data = ArrayTool::deepMerge($data,$elem_attrs);
@@ -71,7 +74,7 @@ class FormGeneratorLogic extends Base
 		$data['labelWidth'] = null;
 		$data['showLabel'] = true;
 		$data['changeTag'] = true;
-		$data = array_merge($data,$this->formTypeTranslate($elem_item));
+		$data['formType'] = $elem_item['elem_form_type'];
 		$data['required'] = false;
 		$data['layout'] = 'colFormItem';
 		$data['span'] = 24;
@@ -82,22 +85,6 @@ class FormGeneratorLogic extends Base
 		return $data;
 	}
 
-	/** 表单类型转换
-     * @param array $elem_item
-	 * @return array
-     * @author xk
-     */
-	public function formTypeTranslate($elem_item){
-		$data = [];
-		if($elem_item['elem_form_type'] == 'aaa'){
-
-		}else{
-			$data['tag'] = 'el-input';
-			$data['tagIcon'] = 'input';
-		}
-
-		return $data;
-	}
 
 	/** 处理表单插槽
      * @param array $elem_item
@@ -136,6 +123,213 @@ class FormGeneratorLogic extends Base
 		return $data;
 	}
 
+
+	/** 处理表单类型转换
+     * @param array $data
+	 * @param array $ele_item
+	 * @return array
+     * @author xk
+     */
+	public function handleFormType($data,$ele_item){
+		$config = $data['__config__'];
+		$type = $config['elem_form_type'];
+		$sele_code = $ele_item['elem_sele_code'];
+		$multiple = $ele_item['elem_is_multiple'] ? true : false;
+		
+		switch ($type) {
+			case 'textarea'://多行文本
+				$data['__config__']['tag'] = 'el-input';
+				$data['__config__']['tagIcon'] = 'textarea';
+				$data['autosize'] = ['minRows'=>4,'maxRows'=>4];
+				break;
+
+			case 'password'://密码
+				$data['__config__']['tag'] = 'el-input';
+				$data['__config__']['tagIcon'] = 'password';
+				$data['show-password'] = true;
+				break;
+	
+			case 'number'://计数器
+				$data['__config__']['tag'] = 'el-input-number';
+				$data['__config__']['tagIcon'] = 'number';
+				break;
+				
+			case 'rich_text'://富文本编辑器
+				$data['__config__']['tag'] = 'tinymce';
+				$data['__config__']['tagIcon'] = 'rich-text';
+				$data['height'] = 300;
+				$data['branding'] = false;
+				break;
+			
+				
+
+			case 'select'://下拉选择,支持单+多
+				$data['__config__']['tag'] = 'el-select';
+				$data['__config__']['tagIcon'] = 'select';
+				$data['__slot__']['options'] = app('Select')->getSelect($sele_code)[$sele_code];
+				$data['filterable'] = true;
+				$data['multiple'] = $multiple;
+				break;
+
+			case 'cascader'://级联选择,支持单+多
+				$data['__config__']['tag'] = 'el-cascader';
+				$data['__config__']['tagIcon'] = 'cascader';
+				$data['__config__']['defaultValue'] = [];
+				$data['__config__']['dataType'] = 'dynamic';
+				$data['options'] = app('Select')->getSelect($sele_code)[$sele_code];
+				$data['props'] = [
+					'props'=>[
+						'multiple'=>$multiple,
+						'label'=>SELECT_LABEL,
+						'value'=>SELECT_VALUE,
+						'children'=>TREE_CHILDREN
+					]
+				];
+				$data['filterable'] = true;
+
+				break;
+
+			case 'radio'://单选框
+				$data['__config__']['tag'] = 'el-radio-group';
+				$data['__config__']['tagIcon'] = 'radio';
+				$data['__config__']['optionType'] = 'default';
+				$data['__slot__']['options'] = app('Select')->getSelect($sele_code)[$sele_code];
+
+				break;
+
+			case 'checkbox'://多选框
+				$data['__config__']['tag'] = '"el-checkbox-group';
+				$data['__config__']['tagIcon'] = 'checkbox';
+				$data['__config__']['defaultValue'] = [];
+				$data['__config__']['optionType'] = 'default';
+				$data['__slot__']['options'] = app('Select')->getSelect($sele_code)[$sele_code];
+				break;
+			
+			case 'el-switch'://开关
+				$data['__config__']['tag'] = 'el-switch';
+				$data['__config__']['tagIcon'] = 'switch';
+				$data['__config__']['defaultValue'] = 0;
+				$data['active-color'] = null;
+				$data['inactive-color'] = null;
+				$data['active-value'] = 1;
+				$data['inactive-value'] = 0;
+				break;
+
+			case 'slider'://滑块
+				$data['__config__']['tag'] = 'el-slider';
+				$data['__config__']['tagIcon'] = 'slider';
+				$data['__config__']['defaultValue'] = 0;
+				break;
+
+
+
+			case 'date'://日期选择
+				$data['__config__']['tag'] = 'el-date-picker';
+				$data['__config__']['tagIcon'] = 'date';
+				$data['__config__']['defaultValue'] = null;
+				$data['type'] = 'date';
+				$data['format'] = 'yyyy-MM-dd';
+				$data['value-format'] = 'yyyy-MM-dd';
+				break;
+
+			case 'date_range'://日期范围
+				$data['__config__']['tag'] = 'el-date-picker';
+				$data['__config__']['tagIcon'] = 'date-range';
+				$data['__config__']['defaultValue'] = null;
+				$data['type'] = 'daterange';
+				$data['format'] = 'yyyy-MM-dd';
+				$data['value-format'] = 'yyyy-MM-dd';
+				$data['range-separator'] = '至';
+				$data['start-placeholder'] = '开始日期';
+				$data['end-placeholder'] = '结束日';
+				break;
+			
+			case 'datetime'://日期时间选择
+				$data['__config__']['tag'] = 'el-date-picker';
+				$data['__config__']['tagIcon'] = 'date';
+				$data['__config__']['defaultValue'] = null;
+				$data['type'] = 'datetime';
+				$data['format'] = 'yyyy-MM-dd HH:mm:ss';
+				$data['value-format'] = 'yyyy-MM-dd HH:mm:ss';
+				break;
+
+			case 'datetime_range'://日期范围
+				$data['__config__']['tag'] = 'el-date-picker';
+				$data['__config__']['tagIcon'] = 'date-range';
+				$data['__config__']['defaultValue'] = null;
+				$data['type'] = 'datetimerange';
+				$data['format'] = 'yyyy-MM-dd HH:mm:ss';
+				$data['value-format'] = 'yyyy-MM-dd HH:mm:ss';
+				$data['range-separator'] = '至';
+				$data['start-placeholder'] = '开始日期';
+				$data['end-placeholder'] = '结束日';
+				break;
+
+			case 'time'://时间选择
+				$data['__config__']['tag'] = '"el-time-picker';
+				$data['__config__']['tagIcon'] = 'time';
+				$data['__config__']['defaultValue'] = null;
+				$data['picker-options'] = ['selectableRange'=>'00:00:00-23:59:59'];
+				$data['format'] = 'HH:mm:ss';
+				$data['value-format'] = 'HH:mm:ss';
+				break;
+
+			case 'time-range'://时间范围
+				$data['__config__']['tag'] = 'el-time-picker';
+				$data['__config__']['tagIcon'] = 'time-range';
+				$data['__config__']['defaultValue'] = null;
+				$data['is-range'] = true;
+				$data['format'] = 'HH:mm:ss';
+				$data['value-format'] = 'HH:mm:ss';
+				$data['range-separator'] = '至';
+				$data['start-placeholder'] = '开始日期';
+				$data['end-placeholder'] = '结束日';
+				break;
+
+			case 'upload':
+				$data['__config__']['tag'] = 'el-upload';
+				$data['__config__']['tagIcon'] = 'upload';
+				$data['__config__']['defaultValue'] = null;
+				$data['__config__']['showTip'] = false;
+				$data['__config__']['buttonText'] = '点击上传';
+				$data['__config__']['fileSize'] = intval(config('upload.max_size'));
+				$data['__config__']['sizeUnit'] = 'MB';
+				$data['action'] = ServerTool::getServer('file_domain_name') . config('upload.upload_url');
+				$data['accept'] = '';
+				$data['name'] = config('upload.field_name');
+				$data['auto-upload'] = true;
+				$data['list-type'] = 'text';
+				$data['multiple'] = $multiple;
+				break;
+			
+			case ''://
+				$data['__config__']['tag'] = '';
+				$data['__config__']['tagIcon'] = '';
+				break;
+
+			case '':
+				$data['__config__']['tag'] = '';
+				$data['__config__']['tagIcon'] = '';
+				break;
+
+			case ''://
+				$data['__config__']['tag'] = '';
+				$data['__config__']['tagIcon'] = '';
+				break;
+
+			case '':
+				$data['__config__']['tag'] = '';
+				$data['__config__']['tagIcon'] = '';
+				break;
+			
+			default://text
+				$data['__config__']['tag'] = 'el-input';
+				$data['__config__']['tagIcon'] = 'input';
+				break;
+		}
+
+		return $data;
+	}
 
 	
 

@@ -47,8 +47,16 @@ class Test extends Base
 		// $a = DataFormat::getTree($menu_data);
 		// $b = DataFormat::getFromTree($a);
 		// $c = ArrayTool::filterTreeValue($a,'用户');
-		$redis = app('Redis');
-		dump($redis);
+		// $redis = app('Redis');
+		// $code = 'boolean';
+		// $data = app('Select')->getSelect($code)[$code];
+		// $key = app('Redis')->selectKey($code);
+		// $a = app('Redis')->set($key,json_encode($data,JSON_UNESCAPED_UNICODE));
+		// $b = app('Redis')->get($key);
+		// $c = app('Redis')->get('aaaa');
+
+		$a = pathinfo('uploads/thumbs/20023/1.jpg');
+		dump($a);
 	}
 
 

@@ -35,4 +35,15 @@ trait RedisKey
         return $this->userTokenKey($token) . ':auth';
     }
 
+    /** 选项code的key
+     * hash
+     * 例: select:code:boolean
+     * @param string $sele_code
+     * @return string
+     * @author xk
+     */
+    public function selectKey($sele_code)
+    {
+        return 'select:code:' . $sele_code;
+    }
 }
