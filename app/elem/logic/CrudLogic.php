@@ -29,7 +29,7 @@ class CrudLogic extends BaseLogic
 
 	public function list($param)
 	{
-		$data = self::$Model::ModellistO($param);
+		$data = self::$Model::listO($param);
 		return $data;
 	}
 

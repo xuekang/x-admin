@@ -116,8 +116,7 @@ class ServerTool
         if(isset($hosts['port'])){
             $host .= ':' . $hosts['port'];
         }
-        $scheme = ValidateTool::isHttps() ? 'https://' : 'http:';
-
+        $scheme = ValidateTool::isHttps() ? 'https://' : 'http://';
         return $scheme . $host . '/';
     }
 }

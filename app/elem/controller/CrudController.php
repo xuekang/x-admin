@@ -6,10 +6,28 @@ namespace app\elem\Controller;
 
 use app\BaseController;
 use app\elem\logic\CrudLogic;
+use think\App;
 
 class CrudController extends BaseController
 {
+	/**
+     * 基础逻辑类
+     * @var CrudLogic
+     */
+	public static $Logic = null;
 
+	/**
+     * 架构函数
+     * @return void
+     */
+    public function __construct(App $app)
+    {
+        parent::__construct($app);
+		$name = TABLE_FORM_CRUD_TABLE_NAME;
+		$crud_table_name = input($name);
+		my_throw_if(!$crud_table_name,"请求参数错误({$name})");
+		self::$Logic = new CrudLogic($crud_table_name);
+    }
 
 	/**
 	 * @Apidoc\Title("获取列表")
@@ -29,36 +47,35 @@ class CrudController extends BaseController
 	public function list()
 	{
 		$param = input();
-        $crud_table_name = input(TABLE_FORM_CRUD_TABLE_NAME);
-		$data = (new CrudLogic($crud_table_name))->list($param);
+		$data = self::$Logic->list($param);
 		return $this->success($data);
 	}
 
 	public function add()
 	{
 		$formData = input(TABLE_FORM_FORM_DATA);
-		(new CrudLogic())->add($formData);
+		self::$Logic->add($formData);
 		return $this->success();
 	}
 
 	public function edit()
 	{
 		$formData = input(TABLE_FORM_FORM_DATA);
-		(new CrudLogic())->edit($formData);
+		self::$Logic->edit($formData);
 		return $this->success();
 	}
 
 	public function del()
 	{
 		$formData = input(TABLE_FORM_FORM_DATA);
-		(new CrudLogic())->del($formData);
+		self::$Logic->del($formData);
 		return $this->success();
 	}
 
 	public function get()
 	{
 		$formData = input(TABLE_FORM_FORM_DATA);
-		$data = (new CrudLogic())->get($formData);
+		$data = self::$Logic->get($formData);
 		return $this->success($data);
 	}
 }

@@ -29,7 +29,11 @@ return [
 	//文件字段名
 	'field_name' => 'file',
 	//最大可上传大小
-	'max_size' => '20Mb',
+	'max_size' => '10Mb',
+	//最大可上传大小-音视频
+	'video_max_size' => '40Mb',
+	//最大可上传大小-文件
+	'file_max_size' => '20Mb',
 	//可上传的文件类型
 	'mime_type' => '*',
 ];

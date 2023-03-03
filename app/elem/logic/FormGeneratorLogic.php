@@ -133,7 +133,14 @@ class FormGeneratorLogic extends BaseLogic
 	public function handleFormType($data,$ele_item){
 		$type = $ele_item['elem_form_type'];
 		$sele_code = $ele_item['elem_sele_code'];
+		$options = [];
+		if($sele_code){
+			$options = app('Select')->getSelect($sele_code);
+			$options = $options ? $options[$sele_code] : [];
+		}
+		
 		$multiple = $ele_item['elem_is_multiple'] ? true : false;
+
 		
 		switch ($type) {
 			case 'textarea'://多行文本
@@ -165,7 +172,7 @@ class FormGeneratorLogic extends BaseLogic
 			case 'select'://下拉选择,支持单+多
 				$data['__config__']['tag'] = 'el-select';
 				$data['__config__']['tagIcon'] = 'select';
-				$data['__slot__']['options'] = app('Select')->getSelect($sele_code)[$sele_code];
+				$data['__slot__']['options'] = $options;
 				$data['filterable'] = true;
 				$data['multiple'] = $multiple;
 				break;
@@ -175,7 +182,7 @@ class FormGeneratorLogic extends BaseLogic
 				$data['__config__']['tagIcon'] = 'cascader';
 				$data['__config__']['defaultValue'] = [];
 				$data['__config__']['dataType'] = 'dynamic';
-				$data['options'] = app('Select')->getSelect($sele_code)[$sele_code];
+				$data['options'] = $options;
 				$data['props'] = [
 					'props'=>[
 						'multiple'=>$multiple,
@@ -192,19 +199,19 @@ class FormGeneratorLogic extends BaseLogic
 				$data['__config__']['tag'] = 'el-radio-group';
 				$data['__config__']['tagIcon'] = 'radio';
 				$data['__config__']['optionType'] = 'default';
-				$data['__slot__']['options'] = app('Select')->getSelect($sele_code)[$sele_code];
+				$data['__slot__']['options'] = $options;
 
 				break;
 
 			case 'checkbox'://多选框
-				$data['__config__']['tag'] = '"el-checkbox-group';
+				$data['__config__']['tag'] = 'el-checkbox-group';
 				$data['__config__']['tagIcon'] = 'checkbox';
 				$data['__config__']['defaultValue'] = [];
 				$data['__config__']['optionType'] = 'default';
-				$data['__slot__']['options'] = app('Select')->getSelect($sele_code)[$sele_code];
+				$data['__slot__']['options'] = $options;
 				break;
 			
-			case 'el-switch'://开关
+			case 'switch'://开关
 				$data['__config__']['tag'] = 'el-switch';
 				$data['__config__']['tagIcon'] = 'switch';
 				$data['__config__']['defaultValue'] = 0;
@@ -231,7 +238,7 @@ class FormGeneratorLogic extends BaseLogic
 				$data['value-format'] = 'yyyy-MM-dd';
 				break;
 
-			case 'date_range'://日期范围
+			case 'date_range'://日期范围选择
 				$data['__config__']['tag'] = 'el-date-picker';
 				$data['__config__']['tagIcon'] = 'date-range';
 				$data['__config__']['defaultValue'] = null;
@@ -252,7 +259,7 @@ class FormGeneratorLogic extends BaseLogic
 				$data['value-format'] = 'yyyy-MM-dd HH:mm:ss';
 				break;
 
-			case 'datetime_range'://日期范围
+			case 'datetime_range'://日期时间范围选择
 				$data['__config__']['tag'] = 'el-date-picker';
 				$data['__config__']['tagIcon'] = 'date-range';
 				$data['__config__']['defaultValue'] = null;
@@ -265,7 +272,7 @@ class FormGeneratorLogic extends BaseLogic
 				break;
 
 			case 'time'://时间选择
-				$data['__config__']['tag'] = '"el-time-picker';
+				$data['__config__']['tag'] = 'el-time-picker';
 				$data['__config__']['tagIcon'] = 'time';
 				$data['__config__']['defaultValue'] = null;
 				$data['picker-options'] = ['selectableRange'=>'00:00:00-23:59:59'];
@@ -273,7 +280,7 @@ class FormGeneratorLogic extends BaseLogic
 				$data['value-format'] = 'HH:mm:ss';
 				break;
 
-			case 'time-range'://时间范围
+			case 'time_range'://时间范围选择
 				$data['__config__']['tag'] = 'el-time-picker';
 				$data['__config__']['tagIcon'] = 'time-range';
 				$data['__config__']['defaultValue'] = null;
@@ -285,7 +292,7 @@ class FormGeneratorLogic extends BaseLogic
 				$data['end-placeholder'] = '结束日';
 				break;
 
-			case 'upload':
+			case 'img'://上传
 				$data['__config__']['tag'] = 'el-upload';
 				$data['__config__']['tagIcon'] = 'upload';
 				$data['__config__']['defaultValue'] = null;
@@ -293,33 +300,67 @@ class FormGeneratorLogic extends BaseLogic
 				$data['__config__']['buttonText'] = '点击上传';
 				$data['__config__']['fileSize'] = intval(config('upload.max_size'));
 				$data['__config__']['sizeUnit'] = 'MB';
-				$data['action'] = ServerTool::getServer('file_domain_name') . config('upload.upload_url');
-				$data['accept'] = '';
+				$data['__slot__']['list-type'] = true;
+				$data['action'] = ServerTool::getDomainName('file_domain_name') . trim(config('upload.upload_url'),'/');
+				$data['accept'] = 'image/*';
 				$data['name'] = config('upload.field_name');
 				$data['auto-upload'] = true;
-				$data['list-type'] = 'text';
+				$data['list-type'] = 'picture-card';
+				$data['multiple'] = $multiple;
+				break;
+
+			case 'video'://上传
+				$data['__config__']['tag'] = 'el-upload';
+				$data['__config__']['tagIcon'] = 'upload';
+				$data['__config__']['defaultValue'] = null;
+				$data['__config__']['showTip'] = false;
+				$data['__config__']['buttonText'] = '点击上传';
+				$data['__config__']['fileSize'] = intval(config('upload.video_max_size'));
+				$data['__config__']['sizeUnit'] = 'MB';
+				$data['__slot__']['list-type'] = true;
+				$data['action'] = ServerTool::getDomainName('file_domain_name') . trim(config('upload.upload_url'),'/');
+				$data['accept'] = 'video/*,audio/*';
+				$data['name'] = config('upload.field_name');
+				$data['auto-upload'] = true;
+				$data['list-type'] = 'picture-card';
 				$data['multiple'] = $multiple;
 				break;
 			
-			case ''://
-				$data['__config__']['tag'] = '';
-				$data['__config__']['tagIcon'] = '';
+			case 'file'://上传
+				$data['__config__']['tag'] = 'el-upload';
+				$data['__config__']['tagIcon'] = 'upload';
+				$data['__config__']['defaultValue'] = null;
+				$data['__config__']['showTip'] = false;
+				$data['__config__']['buttonText'] = '点击上传';
+				$data['__config__']['fileSize'] = intval(config('upload.file_max_size'));
+				$data['__config__']['sizeUnit'] = 'MB';
+				$data['__slot__']['list-type'] = true;
+				$data['action'] = ServerTool::getDomainName('file_domain_name') . trim(config('upload.upload_url'),'/');
+				$data['accept'] = '';
+				$data['name'] = config('upload.field_name');
+				$data['auto-upload'] = true;
+				$data['list-type'] = 'picture-card';
+				$data['multiple'] = $multiple;
 				break;
+			// case ''://
+			// 	$data['__config__']['tag'] = '';
+			// 	$data['__config__']['tagIcon'] = '';
+			// 	break;
 
-			case '':
-				$data['__config__']['tag'] = '';
-				$data['__config__']['tagIcon'] = '';
-				break;
+			// case '':
+			// 	$data['__config__']['tag'] = '';
+			// 	$data['__config__']['tagIcon'] = '';
+			// 	break;
 
-			case ''://
-				$data['__config__']['tag'] = '';
-				$data['__config__']['tagIcon'] = '';
-				break;
+			// case ''://
+			// 	$data['__config__']['tag'] = '';
+			// 	$data['__config__']['tagIcon'] = '';
+			// 	break;
 
-			case '':
-				$data['__config__']['tag'] = '';
-				$data['__config__']['tagIcon'] = '';
-				break;
+			// case '':
+			// 	$data['__config__']['tag'] = '';
+			// 	$data['__config__']['tagIcon'] = '';
+			// 	break;
 			
 			default://text
 				$data['__config__']['tag'] = 'el-input';

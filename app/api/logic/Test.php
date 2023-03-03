@@ -63,7 +63,7 @@ class Test extends BaseLogic
 			preg_match('/^[+-]?(0|([1-9]\d*))(\.\d+)?$/',$str,$number);
 			return $number;
 		}
-		dump(StringTool::toNumber(1),StringTool::toNumber(1.1),StringTool::toNumber('1'),StringTool::toNumber('1.123'),StringTool::toNumber('0.1'),StringTool::toNumber('1321.1'));
+		dump(ServerTool::getDomainName('main_domain_name') . config('upload.upload_url'));
 	}
 
 
