@@ -3,7 +3,7 @@ declare (strict_types = 1);
 
 namespace app\elem\logic;
 
-use app\BaseLogic as Base;
+use app\BaseLogic;
 use app\common\tools\ArrayTool;
 use app\common\tools\DataFormat;
 use app\common\tools\StringTool;
@@ -14,7 +14,7 @@ use app\model\SysElemBtn;
 use app\model\SysElemBtnFormEle;
 use app\elem\logic\FormGeneratorLogic;
 
-class TableGeneratorLogic extends Base
+class TableGeneratorLogic extends BaseLogic
 {
 	/** 获取表格配置
      * @return boolean
@@ -32,6 +32,7 @@ class TableGeneratorLogic extends Base
 		$data = [
 			'tableName'=>$conf['etbl_name'],
 			'tableDesc'=>$conf['etbl_desc'],
+			'crudTableName'=>$conf['etbl_crud_table_name'],
 			'url'=>$conf['etbl_get_url'],
 			'columns'=>$columns,
 			'searchForm'=>$searchForm,

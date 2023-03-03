@@ -3,10 +3,10 @@ declare (strict_types = 1);
 
 namespace app\api\logic;
 
-use app\BaseLogic as Base;
+use app\BaseLogic;
 use app\common\tools\HttpTool;
 
-class BaiduTranslate extends Base
+class BaiduTranslate extends BaseLogic
 {
 	const URL = "http://api.fanyi.baidu.com/api/trans/vip/translate";
 	const APP_ID = "20220216001084920";

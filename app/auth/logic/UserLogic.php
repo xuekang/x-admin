@@ -3,12 +3,11 @@ declare (strict_types = 1);
 
 namespace app\auth\logic;
 
-use app\BaseLogic as Base;
-use app\common\tools\HttpTool;
+use app\BaseLogic;
 use app\model\SysUser;
 use think\helper\Arr;
 
-class UserLogic extends Base
+class UserLogic extends BaseLogic
 {
 	public function list($param)
 	{

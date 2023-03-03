@@ -24,6 +24,24 @@ class StringTool
         }
         return $prefix . $uuid;
     }
+
+
+	/**
+     * 将字符串数字转为实际数字（适用整数或者浮点数）
+     * @param string $str
+     * @return int|float
+     * @author xk
+     */
+    public static function toNumber($str){
+        if(is_string($str) && is_numeric($str)){
+			if(Str::contains($str,'.')){
+				$str = floatval($str);
+			}else{
+				$str = intval($str);
+			}
+		}
+        return $str;
+    }
 	
 	/**
 	 * 判断指定字符串是否在ids中

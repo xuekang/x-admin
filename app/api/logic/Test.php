@@ -4,7 +4,7 @@ declare (strict_types = 1);
 
 namespace app\api\logic;
 
-use app\BaseLogic as Base;
+use app\BaseLogic;
 use app\common\tools\HttpTool;
 use think\facade\Cache;
 use think\facade\Db;
@@ -14,10 +14,11 @@ use app\common\tools\ServerTool;
 use app\common\tools\ArrayTool;
 use app\common\tools\DataFormat;
 use app\common\tools\SnowFlake;
+use app\common\tools\StringTool;
 use app\sql_tool\logic\sqlParser;
 use app\model\SysElemBtn;
 
-class Test extends Base
+class Test extends BaseLogic
 {
 	public function test(){
 		// $a = SysElemBtn::alias('b')
@@ -55,8 +56,14 @@ class Test extends Base
 		// $b = app('Redis')->get($key);
 		// $c = app('Redis')->get('aaaa');
 
-		$a = pathinfo('uploads/thumbs/20023/1.jpg');
-		dump($a);
+		// $a = pathinfo('uploads/thumbs/20023/1.jpg');
+		function ttt($str)
+		{
+			$str = strval($str);
+			preg_match('/^[+-]?(0|([1-9]\d*))(\.\d+)?$/',$str,$number);
+			return $number;
+		}
+		dump(StringTool::toNumber(1),StringTool::toNumber(1.1),StringTool::toNumber('1'),StringTool::toNumber('1.123'),StringTool::toNumber('0.1'),StringTool::toNumber('1321.1'));
 	}
 
 

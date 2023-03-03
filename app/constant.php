@@ -30,7 +30,7 @@ define('AUTH_TYPE_MENU', 1);
 define('AUTH_TYPE_PAGE', 2);
 define('AUTH_TYPE_BUTTON', 3);
 
-//数据结构类型
+//数据结构专用字段
 define('TREE_ID', 'id');
 define('TREE_PID', 'pid');
 define('TREE_CHILDREN', 'children');
@@ -38,6 +38,12 @@ define('TREE_PATH', 'path');
 define('TREE_LEVEL', 'level');
 define('SELECT_LABEL', 'label');
 define('SELECT_VALUE', 'value');
+
+//表格表单配置数据专用字段
+define('TABLE_FORM_FORM_DATA', 'formData');
+define('TABLE_FORM_CRUD_TABLE_NAME', 'crudTableName');
+
+
 
 
 //流程动作类型

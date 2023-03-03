@@ -3,12 +3,12 @@ declare (strict_types = 1);
 
 namespace app\common\cache;
 
-use app\BaseLogic as Base;
+use app\BaseLogic;
 
 /**
  * 缓存键规则
  */
-class RedisContainer extends Base
+class RedisContainer extends BaseLogic
 {
     public $redis = null;//redis实例化时静态变量
 

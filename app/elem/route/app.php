@@ -23,5 +23,11 @@ Route::group('Index', function () {
     Route::any('getFormConf', 'getFormConf');
 })->prefix('IndexController/');
 
-
+Route::group('Crud', function () {
+    Route::any('list', 'list');
+    Route::any('add', 'add');
+    Route::any('edit', 'edit');
+    Route::any('del', 'del');
+    Route::any('get', 'get');
+})->prefix('CrudController/');
 

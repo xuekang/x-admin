@@ -4,9 +4,9 @@ declare (strict_types = 1);
 
 namespace app\sql_tool\Controller;
 
-use app\BaseController as Base;
+use app\BaseController;
 
-class IndexController extends Base
+class IndexController extends BaseController
 {
 
 	public function index()

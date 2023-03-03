@@ -4,11 +4,11 @@ declare (strict_types = 1);
 
 namespace app\code_name\Controller;
 
-use app\BaseController as Base;
+use app\BaseController;
 use app\api\logic\BaiduTranslate;
 use app\api\logic\SearchCode;
 
-class IndexController extends Base
+class IndexController extends BaseController
 {
 
 	public function translate()

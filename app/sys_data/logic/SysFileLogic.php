@@ -3,7 +3,7 @@ declare (strict_types = 1);
 
 namespace app\sys_data\logic;
 
-use app\BaseLogic as Base;
+use app\BaseLogic;
 use app\model\SysFile;
 use app\common\tools\DataFormat;
 use app\common\tools\ArrayTool;
@@ -15,7 +15,7 @@ use think\File;
 use think\file\UploadedFile;
 use think\Image;
 
-class SysFileLogic extends Base
+class SysFileLogic extends BaseLogic
 {
 	/** 获取文件信息(用于前端显示)
      * @param string|array  $file 文件ids或者文件信息列表(二维数组)

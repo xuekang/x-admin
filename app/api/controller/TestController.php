@@ -4,11 +4,11 @@ declare (strict_types = 1);
 
 namespace app\api\Controller;
 
-use app\BaseController as Base;
+use app\BaseController;
 use app\api\logic\Test;
 use app\api\logic\BaiduTranslate;
 
-class TestController extends Base
+class TestController extends BaseController
 {
 	public function makeId()
 	{

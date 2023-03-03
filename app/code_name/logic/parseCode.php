@@ -3,13 +3,13 @@ declare (strict_types = 1);
 
 namespace app\code_name\logic;
 
-use app\BaseLogic as Base;
+use app\BaseLogic;
 use app\common\tools\HttpTool;
 use app\api\logic\BaiduTranslate;
 use app\api\logic\SearchCode;
 use think\helper\Str;
 
-class parseCode extends Base
+class parseCode extends BaseLogic
 {
 	private $value = [];
 

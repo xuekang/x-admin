@@ -6,6 +6,7 @@ namespace app\common\select;
 use app\BaseLogic;
 use app\common\tools\DataFormat;
 use app\common\tools\ArrayTool;
+use app\common\tools\StringTool;
 use app\common\tools\ValidateTool;
 use think\helper\Str;
 use think\helper\Arr;
@@ -392,8 +393,8 @@ class Select extends BaseLogic
             }
             
         }
-        //将value 统一转为字符串
-        $data = $this->formatSelectValueToString($data);
+        //将value 统一转换类型
+        $data = $this->formatSelectValueToNumber($data);
         return $data;
     }
     
@@ -433,6 +434,25 @@ class Select extends BaseLogic
     }
 
 
+    /**
+     * 将value 统一转为数字
+     * @return array 
+     * @author xk
+     */
+    protected function formatSelectValueToNumber($data)
+    {
+        foreach($data as $k=>$v){
+            if(is_numeric($data[$k][SELECT_VALUE]))  $data[$k][SELECT_VALUE] = StringTool::toNumber($data[$k][SELECT_VALUE]);
+           
+            if(isset($v[TREE_CHILDREN])){
+                $data[$k][TREE_CHILDREN] = $this->formatSelectValueToNumber($data[$k][TREE_CHILDREN]);
+            }
+        }
+    
+        return $data;
+    }
+
+
 
 
     /**
@@ -446,7 +466,7 @@ class Select extends BaseLogic
     {
         $result = [];
         foreach ($data as $key => $val) {
-            $result[] = [$lable => $val, $value => strval($key)];
+            $result[] = [$lable => $val, $value => $key];
         }
         return $result;
     }

@@ -3,10 +3,10 @@ declare (strict_types = 1);
 
 namespace app\api\logic;
 
-use app\BaseLogic as Base;
+use app\BaseLogic;
 use app\common\tools\HttpTool;
 
-class SearchCode extends Base
+class SearchCode extends BaseLogic
 {
 	const URL = "https://searchcode.com/api/codesearch_I/";
 

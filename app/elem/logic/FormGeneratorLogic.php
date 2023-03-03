@@ -3,7 +3,7 @@ declare (strict_types = 1);
 
 namespace app\elem\logic;
 
-use app\BaseLogic as Base;
+use app\BaseLogic;
 use app\common\tools\DataFormat;
 use app\common\tools\ArrayTool;
 use app\common\tools\ServerTool;
@@ -11,7 +11,7 @@ use app\common\tools\StringTool;
 use app\model\SysElement;
 use think\helper\Arr;
 
-class FormGeneratorLogic extends Base
+class FormGeneratorLogic extends BaseLogic
 {
 	/** 获取表单配置
      * @return array
@@ -131,8 +131,7 @@ class FormGeneratorLogic extends Base
      * @author xk
      */
 	public function handleFormType($data,$ele_item){
-		$config = $data['__config__'];
-		$type = $config['elem_form_type'];
+		$type = $ele_item['elem_form_type'];
 		$sele_code = $ele_item['elem_sele_code'];
 		$multiple = $ele_item['elem_is_multiple'] ? true : false;
 		

@@ -3,7 +3,7 @@ declare (strict_types = 1);
 
 namespace app\auth\logic;
 
-use app\BaseLogic as Base;
+use app\BaseLogic;
 use app\common\tools\ArrayTool;
 use app\common\tools\DataFormat;
 use app\common\tools\HttpTool;
@@ -17,7 +17,7 @@ use think\facade\Db;
 /**
  * 权限应用
  */
-class AuthAplLogic extends Base
+class AuthAplLogic extends BaseLogic
 {
 	protected $valid_auth = [];
 
