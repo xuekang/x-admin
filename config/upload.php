@@ -20,6 +20,8 @@ return [
 	'upload_dir' => 'uploads/',
 	//缩略图目录
 	'thumb_dir' => 'thumbs/',
+	//文件类默认缩略图
+	'thumb_file_default' => 'static/img/default-file.jpg',
 	//缩略图宽
 	'thumb_width' => '150',
 	//缩略图高

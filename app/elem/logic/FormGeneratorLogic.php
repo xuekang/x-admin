@@ -307,6 +307,7 @@ class FormGeneratorLogic extends BaseLogic
 				$data['auto-upload'] = true;
 				$data['list-type'] = 'picture-card';
 				$data['multiple'] = $multiple;
+				$data['data'] = ['file_type'=>'img'];
 				break;
 
 			case 'video'://上传
@@ -322,8 +323,9 @@ class FormGeneratorLogic extends BaseLogic
 				$data['accept'] = 'video/*,audio/*';
 				$data['name'] = config('upload.field_name');
 				$data['auto-upload'] = true;
-				$data['list-type'] = 'picture-card';
+				$data['list-type'] = 'text';
 				$data['multiple'] = $multiple;
+				$data['data'] = ['file_type'=>'video'];
 				break;
 			
 			case 'file'://上传
@@ -339,8 +341,9 @@ class FormGeneratorLogic extends BaseLogic
 				$data['accept'] = '';
 				$data['name'] = config('upload.field_name');
 				$data['auto-upload'] = true;
-				$data['list-type'] = 'picture-card';
+				$data['list-type'] = 'text';
 				$data['multiple'] = $multiple;
+				$data['data'] = ['file_type'=>'file'];
 				break;
 			// case ''://
 			// 	$data['__config__']['tag'] = '';

@@ -106,27 +106,33 @@ define('ELE_RULE_TYPE_SHOW_VALUE', 7);//元素显示值
 
 //表单类型属性
 define('FORM_TYPE_TEXT', 'text');
-define('FORM_TYPE_NUMBER', 'number');
-define('FORM_TYPE_MONEY', 'money');
 define('FORM_TYPE_TEXTAREA', 'textarea');
+define('FORM_TYPE_PASSWORD', 'password');
+define('FORM_TYPE_NUMBER', 'number');
 define('FORM_TYPE_RICHTEXT', 'rich_text');
+
 define('FORM_TYPE_SELECT', 'select');
+define('FORM_TYPE_CASCADER', 'cascader');
 define('FORM_TYPE_RADIO', 'radio');
 define('FORM_TYPE_CHECKBOX', 'checkbox');
-define('FORM_TYPE_IMG', 'img');
-define('FORM_TYPE_FILE', 'file');
-define('FORM_TYPE_VIDEO', 'video');
+define('FORM_TYPE_SWITCH', 'switch');
+define('FORM_TYPE_SLIDER', 'slider');
+
 define('FORM_TYPE_DATE', 'date');
 define('FORM_TYPE_TIME', 'time');
 define('FORM_TYPE_DATETIME', 'datetime');
-define('FORM_TYPE_DATARANGE', 'date_range');
-define('FORM_TYPE_TIMERANGE', 'time_range');
-define('FORM_TYPE_DATETIMERANGE', 'datetime_range');
+define('FORM_TYPE_DATE_RANGE', 'date_range');
+define('FORM_TYPE_TIME_RANGE', 'time_range');
+define('FORM_TYPE_DATETIME_RANGE', 'datetime_range');
+
+define('FORM_TYPE_IMG', 'img');
+define('FORM_TYPE_VIDEO', 'video');
+define('FORM_TYPE_FILE', 'file');
+
 define('FORM_TYPE_MAP', 'map');
 define('FORM_TYPE_ADDR', 'addr');
-define('FORM_TYPE_CASCADE', 'cascade');
-define('FORM_TYPE_SELECTAJAX', 'select_ajax');
-define('FORM_TYPE_CASCADEAJAX', 'cascade_ajax');
+define('FORM_TYPE_SELECT_AJAX', 'select_ajax');
+define('FORM_TYPE_CASCADE_AJAX', 'cascade_ajax');
 
 
 

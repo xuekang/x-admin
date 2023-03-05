@@ -7,6 +7,9 @@ use app\BaseLogic;
 use think\helper\Arr;
 use think\helper\Str;
 use app\BaseModel;
+use app\common\tools\DataFormat;
+use think\console\output\Formatter;
+use app\elem\logic\EleUtility;
 
 class CrudLogic extends BaseLogic
 {
@@ -35,12 +38,15 @@ class CrudLogic extends BaseLogic
 
 	public function add($param)
 	{
-		self::$Model::myCreate($param);
+		$data = EleUtility::eleWriteBatch($param);
+		// dump($param,$data);
+		self::$Model::myCreate($data);
 	}
 
 	public function edit($param)
 	{
-		self::$Model::mySave($param);
+		$data = EleUtility::eleWriteBatch($param);
+		self::$Model::mySave($data);
 	}
 
 	public function del($param)
@@ -51,7 +57,11 @@ class CrudLogic extends BaseLogic
 	public function get($param)
 	{
 		$data = self::$Model::findOrEmpty($param[ID])->toArray();
+		$data = EleUtility::eleReadBatch($data);
 		return $data;
 	}
+
+
+
 }
 

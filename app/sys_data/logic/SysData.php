@@ -5,15 +5,31 @@ namespace app\sys_data\logic;
 use app\BaseLogic;
 use think\helper\Arr;
 use think\helper\Str;
+use app\model\SysElement;
 use app\model\SysSelect;
 use app\model\SysFunctionCate;
 
 class SysData extends BaseLogic
 {
+    public static $eleData = null;
     public static $selectMap = null;
     public static $functionMap = null;
 
+    /** 获取选项数据
+     * @return array
+     * @author xk
+     */
+    public static function getEleData($elem_name=''){
+        if(is_null(self::$eleData)){
+            $condition = [];
+            if($elem_name){
+                $condition[] = ['elem_name','in',$elem_name];  
+            }
+            self::$eleData = SysElement::getColumn(null,'elem_name',$condition);
+        }
 
+        return self::$eleData;
+    }
 
 	/** 获取选项数据
      * @return array

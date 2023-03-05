@@ -9,6 +9,7 @@ use think\helper\Str;
 use app\common\tools\StringTool;
 use RuntimeException;
 use app\common\tools\ArrayTool;
+use app\sys_data\logic\SysData;
 
 /**
  * 数据格式化类
@@ -195,140 +196,13 @@ class DataFormat
         return $new_arr;
     }
 
-
-
-    /**
-     * 写入转换(元素相关数据写入数据库)
-     * @param mix $value
-     * @param array $ele_item 元素配置数据
-     * @return mix
-     */
-    public static  function eleWrite($value, $ele_item)
-    {
-        $type = $ele_item['type'];
-
-        //时间类型
-        switch ($type) {
-            case FORM_TYPE_DATE:
-                $value = self::fortmatDateToTimestamp($value);
-                break;
-            case FORM_TYPE_DATETIME:
-                $value = self::fortmatDateToTimestamp($value);
-                break;
-            case FORM_TYPE_DATARANGE:
-                $value = self::fortmatDateToTimestamp($value);
-                break;
-            case FORM_TYPE_DATETIMERANGE:
-                $value = self::fortmatDateToTimestamp($value);
-                break;
-            default:
-        }
-
-        return $value;
-    }
-
-    /**
-     * 写入转换(元素相关数据写入数据库)(批量)
-     * @param array $data
-     * @param array $ele_map 元素配置数据
-     * @return array
-     */
-    public static  function eleWriteBatch($data, $ele_map)
-    {
-        foreach($data as $ele_name=>$value){
-            if(isset($ele_map[$ele_name])){
-                $data[$ele_name] = self::eleWrite($value,$ele_map[$ele_name]);
-            }
-        }
-        return $data;
-    }
-
-
-    /**
-     * 读取转换(元素相关数据从数据库读取)
-     * @param mix $value 
-     * @param array $ele_item 元素配置数据
-     * @return mix 
-     */
-    public static function eleRead($value, $ele_item)
-    {
-        $type = $ele_item['type'];
-
-        //时间类型
-        switch ($type) {
-            case FORM_TYPE_DATE:
-                $value = self::fortmatDateToStr($value,'Y-m-d',);
-                break;
-            case FORM_TYPE_DATETIME:
-                $value = self::fortmatDateToStr($value,'Y-m-d H:i:s');
-                break;
-            default:
-        }
-        return $value;
-    }
-
-    /**
-     * 读取转换(元素相关数据从数据库读取)(批量)
-     * @param array $data 
-     * @param array $ele_map 
-     * @return array 
-     */
-    public static function eleReadBatch($data, $ele_map)
-    {
-        foreach($data as $ele_name=>$value){
-            if(isset($ele_map[$ele_name])){
-                $data[$ele_name] = self::eleRead($value,$ele_map[$ele_name]);
-            }
-        }
-        return $data;
-    }
-
-
-    /**
-     * 格式化日期为时间戳
-     * @param string|int|array $value 
-     * @return string 
-     */
-    public static function fortmatDateToTimestamp($value)
-    {
-        $arr = is_array($value) ? $value : explode(',', strval($value));
-        $val_result = [];
-        foreach ($arr as $k => $v) {
-            $v = trim($v);
-            $v = $v && !is_numeric($v) ? strtotime(strval($v)) : $v;
-            $val_result[] = $v;
-        }
-        $value = implode(',',$val_result);
-        return $value;
-    }
-
-    /**
-     * 格式化日期为字符串
-     * @param string|int|array $value 
-     * @param string $format 日期格式
-     * @return string 
-     */
-    public static function fortmatDateToStr($value, $format)
-    {
-        $arr = is_array($value) ? $value : explode(',',strval($value));
-        $val_result = [];
-        foreach ($arr as $val_item) {
-            if(!empty($val_item)){
-                $val_item = is_numeric($val_item) ? date($format, $val_item) : $val_item;
-            }else{
-                $val_item = '';
-            }
-            $val_result[] = $val_item;
-        }
-        $value = implode(',',$val_result);
-        return $value;
-    }
+    
 
     /**
      * 获取json类型数据
      * @param array $data 数据源
      * @param string $key 支持点符号
-     * @param mix $default_value 默认值
+     * @param mixed $default_value 默认值
      * @return array 
      */
     public static function getJsonValue($data, $key, $default_value=[])

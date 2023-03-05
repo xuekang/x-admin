@@ -30,12 +30,14 @@ class SysFileLogic extends BaseLogic
             $file_id_arr = is_array($file) ? $file : explode(',',strval($file));
 			$list = SysFile::getAll([['id', 'in', $file_id_arr]]);
         }
+
         if(!$list) return [];
         $list = array_column($list,null,'id');
 
 		$domain_name =ServerTool::getDomainName('file_domain_name');
         $upload_dir = config('upload.upload_dir');
         $thumb_dir = config('upload.thumb_dir');
+        $thumb_file_default = $domain_name . config('upload.thumb_file_default');
         $cnd_url = $domain_name . $upload_dir;
 
         $data = [];
@@ -51,7 +53,7 @@ class SysFileLogic extends BaseLogic
             
             $item['id'] = $id;
             $item['origin'] =  $file_url;
-            $item['thumb'] = '';
+            $item['thumb'] = $thumb_file_default;
             $item['remark'] = $item['remark'] ?? '';
 
             if(ValidateTool::isUrl($file_url)){
@@ -170,9 +172,8 @@ class SysFileLogic extends BaseLogic
      * @return array $data 文件显示信息
      */
     public function saveData($data){
-        $data['id'] = make_id();
         $data['file_upload_user_id'] = $this->getUserId();
-        SysFile::addOne($data);
+        $data['id'] = SysFile::addOne($data);
         return $this->getShowData([$data]);
     }
 }

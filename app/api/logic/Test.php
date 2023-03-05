@@ -57,13 +57,13 @@ class Test extends BaseLogic
 		// $c = app('Redis')->get('aaaa');
 
 		// $a = pathinfo('uploads/thumbs/20023/1.jpg');
-		function ttt($str)
-		{
-			$str = strval($str);
-			preg_match('/^[+-]?(0|([1-9]\d*))(\.\d+)?$/',$str,$number);
-			return $number;
-		}
-		dump(ServerTool::getDomainName('main_domain_name') . config('upload.upload_url'));
+		// function ttt($str)
+		// {
+		// 	$str = strval($str);
+		// 	preg_match('/^[+-]?(0|([1-9]\d*))(\.\d+)?$/',$str,$number);
+		// 	return $number;
+		// }
+		dump(explode(',','1,2'));
 	}
 
 

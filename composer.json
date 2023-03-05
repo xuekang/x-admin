@@ -27,7 +27,8 @@
         "greenlion/php-sql-parser": "^4.5",
         "marcocesarato/sqlparser": "^0.2.106",
         "godruoyi/php-snowflake": "^2.2",
-        "topthink/think-image": "^1.0"
+        "topthink/think-image": "^1.0",
+        "topthink/think-filesystem": "^2.0"
     },
     "require-dev": {
         "symfony/var-dumper": "^4.2",
