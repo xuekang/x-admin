@@ -98,6 +98,9 @@ class TableGeneratorLogic extends BaseLogic
 
 		$data['prop'] = $elem_item['etbe_elem_name'];
 		$data['label'] = $elem_item['elem_cname'];
+		$data['type'] = $elem_item['elem_show_form_type'] ? : $elem_item['elem_form_type'];
+
+		$data = ArrayTool::deepMerge($data,DataFormat::getJsonValue($elem_item,'elem_table_column_attrs'));
 
 		return $data;
 	}
@@ -167,6 +170,8 @@ class TableGeneratorLogic extends BaseLogic
      * @author xk
      */
 	public function makeTableButtonItem($btn_item,$btn_form_ele_list){
+		$FormGeneratorLogic = new FormGeneratorLogic();
+
 		$data = [
 			'renderKey'=>StringTool::createGuid(),
 			'auth_id'=>$btn_item['ebtn_rele_auth'],
@@ -177,13 +182,19 @@ class TableGeneratorLogic extends BaseLogic
 			'msgboxMessage'=>$btn_item['ebtn_msgbox_message'],
 			'submitUrl'=>$btn_item['ebtn_submit_url'],
 			'getUrl'=>$btn_item['ebtn_get_url'],
-			'dialogForm'=>$this->makeTableButtonItemForm($btn_item,$btn_form_ele_list),
+			'dialogFormFields'=>$this->makeTableButtonItemForm($btn_item,$btn_form_ele_list),
 			'title'=>$btn_item['ebtn_title'],
 			'newPagePath'=>$btn_item['ebtn_new_page_path'],
 		];
 		if($btn_item['ebtn_params']) $data['params'] = DataFormat::getJsonValue($btn_item,'ebtn_params');
 		if($btn_item['ebtn_msgbox_attrs']) $data['msgboxAttrs'] = DataFormat::getJsonValue($btn_item,'ebtn_msgbox_attrs');
 		if($btn_item['ebtn_dialog_attrs']) $data['dialogAttrs'] = DataFormat::getJsonValue($btn_item,'ebtn_dialog_attrs');
+
+		$data['defaultFormConf'] = $FormGeneratorLogic->getDefaultFormConf();
+		$data['defaultFormConf']['formBtns'] = false;
+		if($btn_item['ebtn_form_conf']) {
+			$data['defaultFormConf'] = ArrayTool::deepMerge($data['defaultFormConf'],DataFormat::getJsonValue($btn_item,'ebtn_form_conf'));
+		}
 
 		$ebtn_attrs = DataFormat::getJsonValue($btn_item,'ebtn_attrs');
 		$data = ArrayTool::deepMerge($data,$ebtn_attrs);

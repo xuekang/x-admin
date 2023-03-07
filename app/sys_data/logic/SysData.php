@@ -8,27 +8,19 @@ use think\helper\Str;
 use app\model\SysElement;
 use app\model\SysSelect;
 use app\model\SysFunctionCate;
+use app\BaseModel;
+use app\model\SysFunction;
 
 class SysData extends BaseLogic
 {
-    public static $eleData = null;
-    public static $selectMap = null;
-    public static $functionMap = null;
+    public static $dataMap = [];
 
     /** 获取选项数据
      * @return array
      * @author xk
      */
     public static function getEleData($elem_name=''){
-        if(is_null(self::$eleData)){
-            $condition = [];
-            if($elem_name){
-                $condition[] = ['elem_name','in',$elem_name];  
-            }
-            self::$eleData = SysElement::getColumn(null,'elem_name',$condition);
-        }
-
-        return self::$eleData;
+        return self::getCacheData(SysElement::class,'elem_name',$elem_name);
     }
 
 	/** 获取选项数据
@@ -36,18 +28,8 @@ class SysData extends BaseLogic
      * @author xk
      */
     public static function getSelectData($sele_code=''){
-        if(is_null(self::$selectMap)){
-            self::$selectMap = SysSelect::getColumn(null,'sele_code');
-        }
-
-		if($sele_code && isset(self::$selectMap[$sele_code])){
-			return self::$selectMap[$sele_code];
-		}
-
-        return self::$selectMap;
+        return self::getCacheData(SysSelect::class,'sele_code',$sele_code);
     }
-
-
 
     /**
      * 获取函数数据
@@ -57,15 +39,44 @@ class SysData extends BaseLogic
      */
     public static  function getFunctionData($func_code='')
     {
-        if(is_null(self::$functionMap)){
-            self::$functionMap = SysFunctionCate::getColumn(null,'id');
+        return self::getCacheData(SysFunction::class,'func_code',$func_code);
+    }
+
+    /** 获取缓存数据
+     * @param BaseModel $Model
+     * @param string $key
+     * @param string $code
+     * @return array
+     * @author xk
+     */
+    public static function getCacheData($Model,$key,$code='')
+    {
+        if($code){
+            $data = [];
+            $codes = is_array($code) ? $code : explode(',',$code);
+            $all_map = Arr::get(self::$dataMap,"{$key}.all_map",[]);
+            $map = Arr::get(self::$dataMap,"{$key}.map",[]);
+            $all_map = array_merge($all_map,$map);
+            $need_codes = array_diff($codes,array_keys($all_map));
+            if($need_codes){
+                $all_map = array_merge($all_map,$Model::getColumn(null,$key,[[$key,'in',$need_codes]]));
+            }
+            Arr::set(self::$dataMap,"{$key}.map",$all_map);
+            foreach ($codes as $k => $this_code) {
+                if(isset($all_map[$this_code])){
+                    $data[$this_code] = $all_map[$this_code];
+                }
+            }
+            
+            return $data;
+        }else{
+            $all_map = Arr::get(self::$dataMap,"{$key}.all_map",null);
+            if(is_null($all_map)){
+                $all_map = $Model::getColumn(null,$key);
+                Arr::set(self::$dataMap,"{$key}.all_map",$all_map);
+            }
+            return $all_map;
         }
-
-		if($func_code && isset(self::$functionMap[$func_code])){
-			return self::$functionMap[$func_code];
-		}
-
-        return self::$functionMap;
     }
     
 }

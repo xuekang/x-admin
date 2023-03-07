@@ -281,6 +281,12 @@ class BaseModel extends Model
 		$start = Arr::get($param,'current_page',PAGE_START); 
 		$limit = Arr::get($param,'page_size',PAGE_LIMIT);
         $field = Arr::get($param,'field','*');
+        if($field && $field !== '*'){
+            $field = is_array($field) ? $field : explode(',',$field);
+            $field[] = ID;
+            $field[] = ORDER_VALUE_FIELD;
+            $field = array_unique(array_filter($field));
+        }
         $field = empty($field) ? '*' : $field;
         $order = Arr::get($param,'order',PAGE_ORDER);
         $join = Arr::get($param,'join',[]);

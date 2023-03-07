@@ -37,12 +37,12 @@ class EleUtility extends BaseLogic
     /**
      * 写入转换(元素相关数据写入数据库)
      * @param mixed $value
-     * @param array $ele_item 元素配置数据
+     * @param array $elem_item 元素配置数据
      * @return mixed
      */
-    public static  function eleWrite($value, $ele_item)
+    public static  function eleWrite($value, $elem_item)
     {
-        $type = $ele_item['elem_form_type'];
+        $type = $elem_item['elem_form_type'];
         
         if($value === '' || is_null($value)) return '';
         
@@ -71,6 +71,15 @@ class EleUtility extends BaseLogic
      */
     public static function isFile($type){
 		return in_array($type,[FORM_TYPE_IMG,FORM_TYPE_VIDEO,FORM_TYPE_FILE]);
+	}
+
+    /**
+     * 判断是否为文件类
+     * @param string $type 
+     * @return boolean 
+     */
+    public static function isSelect($type){
+		return in_array($type,[FORM_TYPE_SELECT,FORM_TYPE_CASCADER,FORM_TYPE_RADIO,FORM_TYPE_CHECKBOX,FORM_TYPE_SWITCH]);
 	}
 
 
@@ -154,12 +163,12 @@ class EleUtility extends BaseLogic
     /**
      * 读取转换(元素相关数据从数据库读取)
      * @param mixed $value 
-     * @param array $ele_item 元素配置数据
+     * @param array $elem_item 元素配置数据
      * @return mixed 
      */
-    public static function eleRead($value, $ele_item)
+    public static function eleRead($value, $elem_item)
     {
-        $type = $ele_item['elem_form_type'];
+        $type = $elem_item['elem_form_type'];
         if($value === '' || is_null($value)) return '';
 
 		//日期
@@ -170,10 +179,10 @@ class EleUtility extends BaseLogic
 		}
 
 		//文件
-		if(self::isFile($type)) $value = self::toFileArray($value, $ele_item);
+		if(self::isFile($type)) $value = self::toFileArray($value, $elem_item);
 
 		//数组类
-		if(self::isArrayFormType($type,$ele_item)) $value = self::toArray($value);
+		if(self::isArrayFormType($type,$elem_item)) $value = self::toArray($value);
         
         return $value;
     }
@@ -181,11 +190,11 @@ class EleUtility extends BaseLogic
 	/**
      * 判断是否为数组类表单
      * @param string|int|array $value 
-     * @param array $ele_item 
+     * @param array $elem_item 
      * @return boolean 
      */
-    public static function isArrayFormType($type,$ele_item){
-		if($ele_item['elem_is_multiple']){
+    public static function isArrayFormType($type,$elem_item){
+		if($elem_item['elem_is_multiple']){
 			return true;
 		}
 
@@ -236,14 +245,14 @@ class EleUtility extends BaseLogic
 	/**
      * 格式化为文件数组
      * @param string|int|array $value 
-     * @param array $ele_item
+     * @param array $elem_item
      * @return array 
      */
-    public static function toFileArray($value,$ele_item)
+    public static function toFileArray($value,$elem_item)
     {
 		if(!$value) return [];
 
-        $sele_code_show = $ele_item['elem_name'];
+        $sele_code_show = $elem_item['elem_name'];
 		$sele_code_show_param = [
 			$sele_code_show=>[
 				'code'=>$sele_code_show,
@@ -257,5 +266,25 @@ class EleUtility extends BaseLogic
         return $show_value;
     }
 
+
+    /**
+     * 判断某个值是否有效
+     * @param mixed $value
+     * @param boolean|int $valid_zero
+     * @return boolean
+     */
+    public static function isValidValue($value,$valid_zero=false)
+    {
+		$flag = true;
+        if(is_numeric($value)){
+            $value = StringTool::toNumber($value);
+            if($value === 0){
+                $flag = $valid_zero ? true : false;
+            }
+        }else{
+            $flag = $value ? true : false; 
+        }
+        return $flag;
+    }
 }
 

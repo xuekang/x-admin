@@ -6,10 +6,11 @@ namespace app\elem\logic;
 use app\BaseLogic;
 use think\helper\Arr;
 use think\helper\Str;
+use app\elem\logic\EleUtility;
+use app\sys_data\logic\SysData;
 use app\BaseModel;
 use app\common\tools\DataFormat;
-use think\console\output\Formatter;
-use app\elem\logic\EleUtility;
+
 
 class CrudLogic extends BaseLogic
 {
@@ -33,6 +34,8 @@ class CrudLogic extends BaseLogic
 	public function list($param)
 	{
 		$data = self::$Model::listO($param);
+		$ListUtility = new ListUtility($data['list']);
+		$data['list'] = $show_list = $ListUtility->format();
 		return $data;
 	}
 

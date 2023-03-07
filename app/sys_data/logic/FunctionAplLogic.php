@@ -18,7 +18,7 @@ class FunctionAplLogic extends BaseLogic
     public static function executeFunction(...$args)
     {
         $func_code = array_shift($args);
-        $func = SysData::getFunctionData($func_code);
+        $func = SysData::getFunctionData($func_code)[$func_code];
         my_throw_if(!$func,"函数({$func_code})未配置");
 
         $func_cname = $func['func_cname'];

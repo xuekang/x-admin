@@ -17,6 +17,7 @@ use app\common\tools\SnowFlake;
 use app\common\tools\StringTool;
 use app\sql_tool\logic\sqlParser;
 use app\model\SysElemBtn;
+use app\sys_data\logic\SysData;
 
 class Test extends BaseLogic
 {
@@ -63,7 +64,9 @@ class Test extends BaseLogic
 		// 	preg_match('/^[+-]?(0|([1-9]\d*))(\.\d+)?$/',$str,$number);
 		// 	return $number;
 		// }
-		dump(explode(',','1,2'));
+		$data = app('Select',['select_config_map'=>1],true);
+
+		dump($data);
 	}
 
 

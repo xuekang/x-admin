@@ -35,6 +35,31 @@ class FormGeneratorLogic extends BaseLogic
 
 	}
 
+	/** 获取默认表单配置
+     * @return array
+     * @author xk
+     */
+	public function getDefaultFormConf()
+	{
+		$data = [
+			'fields'=> [],
+			'formRef'=> 'elForm',
+			'formModel'=> 'formData',
+			'size'=> 'small',
+			'labelPosition'=> 'right',
+			'labelWidth'=> 100,
+			'formRules'=> 'rules',
+			'span'=> 6,
+			'gutter'=> 15,
+			'disabled'=> false,
+			'loading'=> false,
+			'formBtns'=> true
+		];
+
+		return $data;
+
+	}
+
 	/** 生成字段
      * @param array $elem_item
 	 * @return array
@@ -126,20 +151,20 @@ class FormGeneratorLogic extends BaseLogic
 
 	/** 处理表单类型转换
      * @param array $data
-	 * @param array $ele_item
+	 * @param array $elem_item
 	 * @return array
      * @author xk
      */
-	public function handleFormType($data,$ele_item){
-		$type = $ele_item['elem_form_type'];
-		$sele_code = $ele_item['elem_sele_code'];
+	public function handleFormType($data,$elem_item){
+		$type = $elem_item['elem_form_type'];
+		$sele_code = $elem_item['elem_sele_code'];
 		$options = [];
 		if($sele_code){
 			$options = app('Select')->getSelect($sele_code);
 			$options = $options ? $options[$sele_code] : [];
 		}
 		
-		$multiple = $ele_item['elem_is_multiple'] ? true : false;
+		$multiple = $elem_item['elem_is_multiple'] ? true : false;
 
 		
 		switch ($type) {

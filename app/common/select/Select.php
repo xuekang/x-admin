@@ -23,8 +23,8 @@ use think\console\command\make\Validate;
  */
 class Select extends BaseLogic
 {
-    protected $selectMap; //选项数组
-    protected $selectDict; //配置类选项
+    protected $selectConfigMap; //选项配置数组
+    protected $selectDict; //文件配置类选项
     protected $selectCacheTag = 'select_cache_key'; //选项缓存tag
     protected $SysFileLogic = null;
     
@@ -41,6 +41,8 @@ class Select extends BaseLogic
         $this->selectDict = require_once root_path() . '/app/common/select/SelectDict.php';
 
         $this->SysFileLogic = new SysFileLogic();
+
+        if(isset($args['select_config_map'])) $this->selectConfigMap = $args['select_config_map'];
     }
 
     /**
@@ -67,7 +69,6 @@ class Select extends BaseLogic
         $code_arr = is_string($code) ? explode(',', $code) : $code;
         $data = [];
         
-
         foreach ($code_arr as $k => $v) {
             //解析选项code
             list($code,$type,$param,$condition,$page_param,$select_cache_key) = $this->parseSeletCode($k,$v);
@@ -80,7 +81,6 @@ class Select extends BaseLogic
                 $data[$code] = $data_item;
                 continue;
             }
-
             if (in_array($type, ['img', 'video', 'file'])) {
                 //文件类
                 $data_item = array_values($this->SysFileLogic->getShowData($param));
@@ -108,14 +108,14 @@ class Select extends BaseLogic
      * @return array 键值对 ，如['boolean'=>['1'=>'是','0'=>'否']]
      * @author xk
      */
-    public function getSelectMap($code)
+    public function getSelectMap($code,$type='select')
     {
         $select_data = $this->getSelect($code);
         
         $data = [];
         
         foreach ($select_data as $k => $v) {
-            $data_item = $this->getSelectMapItem($v);
+            $data_item = $this->getSelectMapItem($v,$type);
             $data[$k] = $data_item;
         }
 
@@ -194,7 +194,11 @@ class Select extends BaseLogic
 
 
         //数据库类选项定义
-        $select_item = SysData::getSelectData($code);
+        if(isset($this->selectConfigMap[$code])){
+            $select_item = $this->selectConfigMap[$code];
+        }else{
+            $select_item = current(SysData::getSelectData($code));
+        }
         if ($select_item) {
             if($select_item['sele_func']){
                 $value = FunctionAplLogic::executeFunction($select_item['sele_func'],$param,$condition,$page_param);
@@ -402,15 +406,16 @@ class Select extends BaseLogic
     /**
      * 获取单个选项映射数组
      * @param array $select_item 单个选项初始数组
+     * @param string $type
      * @return array 键值对
      * @author xk
      */
-    protected function getSelectMapItem($select_item, &$data = [])
+    protected function getSelectMapItem($select_item,$type='select', &$data = [])
     {
         foreach ($select_item as $k => $v) {
-            $data[$v[SELECT_VALUE]] = $v[SELECT_LABEL];
+            $data[$v[SELECT_VALUE]] = $type == 'file' ? $v : $v[SELECT_LABEL];
             if (isset($v[TREE_CHILDREN]) && $v[TREE_CHILDREN]) {
-                $this->getSelectMapItem($v[TREE_CHILDREN], $data);
+                $this->getSelectMapItem($v[TREE_CHILDREN], $type,$data);
             }
         }
         return $data;
@@ -510,5 +515,24 @@ class Select extends BaseLogic
 			}
 		}
 		return $flag;
+    }
+
+
+    /**
+     * 获取查询键
+	 * @param array $select_item
+     * @return string
+     */
+    public function getSelectQueryKey($select_item)
+    {
+        $query_field = ID;
+        if($select_item){
+            if($select_item['sele_cascade_key']){
+                $query_field = $select_item['sele_cascade_key'];
+            }elseif($select_item['sele_value']){
+                $query_field = $select_item['sele_value'];
+            }
+        }
+        return $query_field;
     }
 }
