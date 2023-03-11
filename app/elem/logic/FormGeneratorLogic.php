@@ -78,11 +78,14 @@ class FormGeneratorLogic extends BaseLogic
 
 		$data = $this->handleFormType($data,$elem_item);
 		
-		$elem_attrs = DataFormat::getJsonValue($elem_item,'elem_attrs');
-		$data = ArrayTool::deepMerge($data,$elem_attrs);
-		$data = $this->handleJsonField([
-			'__config__.regList'=>[]
-		],$data);
+		$data = ArrayTool::deepMerge($data,DataFormat::getJsonValue($elem_item,'elem_attrs'));
+
+		$data = $this->handleJsonField(
+			[
+				'__config__.regList'=>[]
+			],
+			$data
+		);
 
 		return $data;
 	}

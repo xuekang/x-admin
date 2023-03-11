@@ -39,40 +39,42 @@ class SysData extends BaseLogic
      */
     public static  function getFunctionData($func_code='')
     {
-        return self::getCacheData(SysFunction::class,'func_code',$func_code);
+        return self::getCacheData(SysFunction::class,'func_code',$func_code,true);
     }
 
     /** 获取缓存数据
      * @param BaseModel $Model
      * @param string $key
      * @param string $code
+     * @param boolean $is_id
      * @return array
      * @author xk
      */
-    public static function getCacheData($Model,$key,$code='')
+    public static function getCacheData($Model,$key,$code='',$is_id=false)
     {
+        $search_key = $is_id ? ID : $key;
         if($code){
             $data = [];
-            $codes = is_array($code) ? $code : explode(',',$code);
+            $codes = is_array($code) ? $code : explode(',',strval($code));
             $all_map = Arr::get(self::$dataMap,"{$key}.all_map",[]);
             $map = Arr::get(self::$dataMap,"{$key}.map",[]);
             $all_map = array_merge($all_map,$map);
             $need_codes = array_diff($codes,array_keys($all_map));
             if($need_codes){
-                $all_map = array_merge($all_map,$Model::getColumn(null,$key,[[$key,'in',$need_codes]]));
+                $all_map = array_merge($all_map,$Model::getColumn(null,$search_key,[[$search_key,'in',$need_codes]]));
             }
+            $all_map = array_column($all_map,null,$search_key);
             Arr::set(self::$dataMap,"{$key}.map",$all_map);
             foreach ($codes as $k => $this_code) {
                 if(isset($all_map[$this_code])){
                     $data[$this_code] = $all_map[$this_code];
                 }
             }
-            
             return $data;
         }else{
             $all_map = Arr::get(self::$dataMap,"{$key}.all_map",null);
             if(is_null($all_map)){
-                $all_map = $Model::getColumn(null,$key);
+                $all_map = $Model::getColumn(null,$search_key);
                 Arr::set(self::$dataMap,"{$key}.all_map",$all_map);
             }
             return $all_map;

@@ -62,7 +62,7 @@ class TableGeneratorLogic extends BaseLogic
 		
 		foreach ($ele_list as $elem_item) {
 			if($elem_item['etbe_extend']){
-				$extend = json_decode($elem_item['etbl_extra_prop'],true);
+				$extend = json_decode($elem_item['etbe_extend'],true);
 				$elem_item = array_merge($elem_item,$extend);
 			}
 			

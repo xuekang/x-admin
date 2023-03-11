@@ -18,10 +18,17 @@ use app\common\tools\StringTool;
 use app\sql_tool\logic\sqlParser;
 use app\model\SysElemBtn;
 use app\sys_data\logic\SysData;
+use ReflectionObject;
 
 class Test extends BaseLogic
 {
 	public function test(){
+		$a1 = ['a'=>1,'b'=>2];
+		$a2 = ['a'=>11,'b'=>21];
+		dump(array_merge($a1,$a2));
+
+	}
+	public function test3(){
 		// $a = SysElemBtn::alias('b')
 		// ->join('sys_auth a','a.id = b.ebtn_rele_auth')
 		// ->field('b.ebtn_rele_auth as auth_id,b.*')
@@ -64,9 +71,30 @@ class Test extends BaseLogic
 		// 	preg_match('/^[+-]?(0|([1-9]\d*))(\.\d+)?$/',$str,$number);
 		// 	return $number;
 		// }
-		$data = app('Select',['select_config_map'=>1],true);
+		// $data = app('Select',['select_config_map'=>1],true);
 
-		dump($data);
+			// my_throw(1);
+		$class  = 'app\api\logic\Test1';
+		$method = 'test2';
+		$args = [];
+		// $class
+		// $a = new \ReflectionClass($class);
+		// $b = new \ReflectionMethod($class,$method);
+		// $c = method_exists($class,$method);
+		// dump(function_exists());
+
+		$ReflectionMethod = new \ReflectionMethod($class,$method);
+		$App = app();
+		if($ReflectionMethod->isStatic()){
+			$App->invoke("$class::$method",$args);
+		}else{
+			$App->invoke([$class,$method],$args);
+		}
+
+		
+		
+		dump(111);
+		// $data = call_user_func_array([$class,$method],$args);
 	}
 
 

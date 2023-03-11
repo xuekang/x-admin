@@ -64,6 +64,15 @@ class EleUtility extends BaseLogic
 		return in_array($type,[FORM_TYPE_DATE,FORM_TYPE_DATETIME,FORM_TYPE_DATE_RANGE,FORM_TYPE_DATETIME_RANGE]);
 	}
 
+    /**
+     * 判断是否为日期范围类
+     * @param string $type 
+     * @return boolean 
+     */
+    public static function isDateRange($type){
+		return in_array($type,[FORM_TYPE_DATE_RANGE,FORM_TYPE_DATETIME_RANGE,FORM_TYPE_TIME_RANGE]);
+	}
+
 	/**
      * 判断是否为文件类
      * @param string $type 
