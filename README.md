@@ -1,65 +1,36 @@
-ThinkPHP 6.0
-===============
+# X-ADMIN
 
-> 运行环境要求PHP7.2+，兼容PHP8.1
-
-[官方应用服务市场](https://market.topthink.com) | [`ThinkAPI`——官方统一API服务](https://docs.topthink.com/think-api)
-
-ThinkPHPV6.0版本由[亿速云](https://www.yisu.com/)独家赞助发布。
+> 运行环境要求 PHP7.2+，兼容 PHP8.1
 
 ## 主要新特性
 
-* 采用`PHP7`强类型（严格模式）
-* 支持更多的`PSR`规范
-* 原生多应用支持
-* 更强大和易用的查询
-* 全新的事件系统
-* 模型事件和数据库事件统一纳入事件系统
-* 模板引擎分离出核心
-* 内部功能中间件化
-* SESSION/Cookie机制改进
-* 对Swoole以及协程支持改进
-* 对IDE更加友好
-* 统一和精简大量用法
+- 完全由后端配置数据动态渲染前端路由，新增页面时只需新增后台数据配置，前端无需任何理路由配置
+- 完全由后端配置数据前端权限控制，除了常规的菜单页面权限控制，更是细化到按钮权限控制
+- 基于 RBAC 模型（role-based-access-control）的通用权限管理模块
+- 通过后台配置数据自动生成常规的 CRUD 前端管理页面
+- 通用流程设计和管理，支持行政办公和业务办公流程
+- 通用流程报表查询
+- 可按配置自动生表单、表格、按钮，可视化配置生成 crud 页面
+- 后端接口自动生成可视化的接口文档
 
-## 安装
+## 安装和使用
 
-~~~
-composer create-project topthink/think tp 6.0.*
-~~~
+```
+git clone git@github.com:xuekang/x-admin.git
+```
 
 如果需要更新框架使用
-~~~
-composer update topthink/framework
-~~~
+
+```
+cd x-admin
+
+composer install
+```
 
 启动内置服务器
-~~~
+
+```
 php think run
 
 php think run -H tp.com -p 80 //支持制定IP和端口访问
-~~~
-
-
-
-## 文档
-
-[完全开发手册](https://www.kancloud.cn/manual/thinkphp6_0/content)
-
-## 参与开发
-
-请参阅 [ThinkPHP 核心框架包](https://github.com/top-think/framework)。
-
-## 版权信息
-
-ThinkPHP遵循Apache2开源协议发布，并提供免费使用。
-
-本项目包含的第三方源码和二进制文件之版权信息另行标注。
-
-版权所有Copyright © 2006-2021 by ThinkPHP (http://thinkphp.cn)
-
-All rights reserved。
-
-ThinkPHP® 商标和著作权所有者为上海顶想信息科技有限公司。
-
-更多细节参阅 [LICENSE.txt](LICENSE.txt)
+```
